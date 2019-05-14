@@ -2,15 +2,26 @@
 //  AppDelegate.swift
 //  UICollectionViewFlexboxLayout
 //
-//  Created by 王杰 on 2019/4/17.
+//  Created by Jerry Wong on 2019/4/17.
 //  Copyright © 2019 com.jerry. All rights reserved.
 //
 
 import UIKit
+import Intent
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-
+class AppDelegate: UIResponder, UIApplicationDelegate, TopWindowPerceptive {
+    
+    lazy var topWindow: UIWindow = {
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.backgroundColor = UIColor.clear
+        window.windowLevel = UIWindow.Level.normal + 1
+        window.rootViewController = UIViewController()
+        window.makeKeyAndVisible()
+        window.isHidden = true
+        return window
+    }()
+    
     var window: UIWindow?
 
 

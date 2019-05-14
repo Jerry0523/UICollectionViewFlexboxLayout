@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ZHj-9W-iov">
+    <device id="retina6_1" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="Hrv-JT-uEb">
+            <objects>
+                <navigationController id="ZHj-9W-iov" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="SUj-IV-4Ff">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="R3c-b8-4Sv" kind="relationship" relationship="rootViewController" id="vIw-4d-dRY"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BVb-Tz-6Tp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-862" y="21"/>
+        </scene>
+        <!--Flexbox CollectionView Layout-->
+        <scene sceneID="mo3-WU-D6p">
+            <objects>
+                <tableViewController id="R3c-b8-4Sv" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="zah-kX-KH0">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <sections>
+                            <tableViewSection id="cVN-dx-kUi">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" textLabel="QHC-GW-pgK" style="IBUITableViewCellStyleDefault" id="79L-Jj-Ot3">
+                                        <rect key="frame" x="0.0" y="35" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="79L-Jj-Ot3" id="WVR-z7-4j9">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Vertical" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QHC-GW-pgK">
+                                                    <rect key="frame" x="20" y="0.0" width="374" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="BYZ-38-t0r" kind="show" id="ohR-IW-mJv"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" textLabel="0zK-dV-oej" style="IBUITableViewCellStyleDefault" id="Qam-6P-rVN">
+                                        <rect key="frame" x="0.0" y="79" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Qam-6P-rVN" id="TZx-Ze-Zff">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Horizontal" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="0zK-dV-oej">
+                                                    <rect key="frame" x="20" y="0.0" width="374" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="vto-JB-BSE" kind="show" id="r2g-Jh-c6R"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="R3c-b8-4Sv" id="N8p-Sn-rSZ"/>
+                            <outlet property="delegate" destination="R3c-b8-4Sv" id="e7B-ee-WEh"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Flexbox CollectionView Layout" id="b8A-iq-VdI"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="v2b-Mf-VLP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="117" y="15"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="UICollectionViewFlexboxLayoutDemo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ndd-yc-Rck">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <collectionViewLayout key="collectionViewLayout" id="jW3-rG-EAy" customClass="UICollectionViewFlexboxLayout" customModule="UICollectionViewFlexboxLayout"/>
+                                <cells/>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="fov-iE-19z"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="Osk-mk-45x"/>
+                                    <outletCollection property="gestureRecognizers" destination="SWD-Ha-7VJ" appends="YES" id="bMM-VL-4w2"/>
+                                </connections>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="ndd-yc-Rck" secondAttribute="bottom" id="Dtm-dc-Ibg"/>
+                            <constraint firstItem="ndd-yc-Rck" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="d7y-LN-ZJb"/>
+                            <constraint firstAttribute="trailing" secondItem="ndd-yc-Rck" secondAttribute="trailing" id="g3P-Bp-r2a"/>
+                            <constraint firstItem="ndd-yc-Rck" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="ujo-Vf-yAl"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="ljI-5T-tO1">
+                        <barButtonItem key="rightBarButtonItem" title="Control Pannel" id="cSc-51-LjN">
+                            <connections>
+                                <action selector="didOpenControlPannel:" destination="BYZ-38-t0r" id="3Xj-8s-RmQ"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="collectionView" destination="ndd-yc-Rck" id="QHI-Nn-A61"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="SWD-Ha-7VJ">
+                    <connections>
+                        <action selector="didRecognizeLongGesture:" destination="BYZ-38-t0r" id="xsi-FG-trR"/>
+                    </connections>
+                </pongPressGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="1251" y="-110"/>
+        </scene>
+        <!--Control Pannel-->
+        <scene sceneID="6xz-ow-V6V">
+            <objects>
+                <viewController storyboardIdentifier="controlPannel" id="D4Z-Q8-dIs" customClass="ControlPannel" customModule="UICollectionViewFlexboxLayoutDemo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="y2V-Y0-s9P">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="bGK-vH-CIx">
+                                <rect key="frame" x="10" y="54" width="394" height="182"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="JustifyContent" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RSz-zv-Ws9">
+                                        <rect key="frame" x="0.0" y="0.0" width="394" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="xyD-Ij-Ef9">
+                                        <rect key="frame" x="0.0" y="30.5" width="394" height="29"/>
+                                        <segments>
+                                            <segment title="Start"/>
+                                            <segment title="End"/>
+                                            <segment title="Center"/>
+                                            <segment title="Between"/>
+                                            <segment title="Around"/>
+                                        </segments>
+                                        <connections>
+                                            <action selector="didUpdateJustifyContent:" destination="D4Z-Q8-dIs" eventType="valueChanged" id="Eyd-hr-sso"/>
+                                        </connections>
+                                    </segmentedControl>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AlignItems" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jc1-1m-3YZ">
+                                        <rect key="frame" x="0.0" y="68.5" width="394" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="ZJV-pk-0W9">
+                                        <rect key="frame" x="0.0" y="99" width="394" height="29"/>
+                                        <segments>
+                                            <segment title="Start"/>
+                                            <segment title="End"/>
+                                            <segment title="Center"/>
+                                            <segment title="Stretch"/>
+                                        </segments>
+                                        <connections>
+                                            <action selector="didUpdateAlignItems:" destination="D4Z-Q8-dIs" eventType="valueChanged" id="ib8-4t-avm"/>
+                                        </connections>
+                                    </segmentedControl>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xdv-Bq-4um">
+                                        <rect key="frame" x="0.0" y="137" width="394" height="5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="4"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="8JS-6H-i1o">
+                                        <rect key="frame" x="0.0" y="152" width="394" height="30"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2HP-Is-sgp">
+                                                <rect key="frame" x="0.0" y="0.0" width="192" height="30"/>
+                                                <color key="backgroundColor" white="0.79518229169999999" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <state key="normal" title="Cancel"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="5"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.maskToBounds" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="didClickCancelButton:" destination="D4Z-Q8-dIs" eventType="touchUpInside" id="WcQ-wm-smR"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="phK-dT-NbC">
+                                                <rect key="frame" x="202" y="0.0" width="192" height="30"/>
+                                                <color key="backgroundColor" white="0.79518229169999999" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <state key="normal" title="Submit"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="5"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.maskToBounds" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="didClickSubmitButton:" destination="D4Z-Q8-dIs" eventType="touchUpInside" id="mxb-Lw-IRh"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="bGK-vH-CIx" firstAttribute="trailing" secondItem="n9T-fq-o60" secondAttribute="trailing" constant="-10" id="WMS-8t-fwa"/>
+                            <constraint firstItem="bGK-vH-CIx" firstAttribute="top" secondItem="n9T-fq-o60" secondAttribute="top" constant="10" id="XEG-yo-T2e"/>
+                            <constraint firstItem="bGK-vH-CIx" firstAttribute="leading" secondItem="n9T-fq-o60" secondAttribute="leading" constant="10" id="bRL-WZ-CTj"/>
+                            <constraint firstItem="n9T-fq-o60" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="bGK-vH-CIx" secondAttribute="bottom" constant="20" id="eE5-D3-A5A"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="n9T-fq-o60"/>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="alignItemsControl" destination="ZJV-pk-0W9" id="r7G-hH-PaC"/>
+                        <outlet property="justifyContentControl" destination="xyD-Ij-Ef9" id="Wue-e1-hXx"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gGY-yQ-3ZF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-871.01449275362324" y="1188.6160714285713"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="WpF-ef-nH1">
+            <objects>
+                <viewController id="vto-JB-BSE" customClass="ViewController" customModule="UICollectionViewFlexboxLayoutDemo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="MgJ-R0-DjS">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Yfz-SV-Wgp">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <collectionViewLayout key="collectionViewLayout" id="Ag6-ug-sp4" customClass="UICollectionViewFlexboxLayout" customModule="UICollectionViewFlexboxLayout"/>
+                                <cells/>
+                                <connections>
+                                    <outlet property="dataSource" destination="vto-JB-BSE" id="QFH-EM-hB2"/>
+                                    <outlet property="delegate" destination="vto-JB-BSE" id="aQj-dG-xI7"/>
+                                    <outletCollection property="gestureRecognizers" destination="nS8-hm-Enh" appends="YES" id="pcd-dr-Ow4"/>
+                                </connections>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="Yfz-SV-Wgp" secondAttribute="bottom" id="6Fj-Ms-4Sl"/>
+                            <constraint firstItem="Yfz-SV-Wgp" firstAttribute="top" secondItem="MgJ-R0-DjS" secondAttribute="top" id="73O-08-3YR"/>
+                            <constraint firstAttribute="trailing" secondItem="Yfz-SV-Wgp" secondAttribute="trailing" id="AcT-r5-KIq"/>
+                            <constraint firstItem="Yfz-SV-Wgp" firstAttribute="leading" secondItem="MgJ-R0-DjS" secondAttribute="leading" id="JWH-eE-43a"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="n4x-9t-opW"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="7bD-yp-ILf">
+                        <barButtonItem key="rightBarButtonItem" title="Control Pannel" id="77K-Ah-qnA">
+                            <connections>
+                                <action selector="didOpenControlPannel:" destination="vto-JB-BSE" id="8Yb-H1-7e1"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="isHorizontal" value="YES"/>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <outlet property="collectionView" destination="Yfz-SV-Wgp" id="4Qz-3k-N33"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="PL3-oX-CjO" sceneMemberID="firstResponder"/>
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="nS8-hm-Enh">
+                    <connections>
+                        <action selector="didRecognizeLongGesture:" destination="vto-JB-BSE" id="8Oe-of-Mwo"/>
+                    </connections>
+                </pongPressGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="1223" y="600"/>
+        </scene>
+    </scenes>
+</document>
