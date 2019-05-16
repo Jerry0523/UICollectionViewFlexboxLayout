@@ -235,7 +235,9 @@ open class UICollectionViewCustomizableLayout<S> : UICollectionViewLayout where 
     
     private var mSizeInfos: [S.SizeType]?
     
-    private var mLayoutAttrMap = LayoutAttrMap()
+    internal var mOldLayoutAttrMap: LayoutAttrMap?
+    
+    internal var mLayoutAttrMap = LayoutAttrMap()
     
     private var mAutoSizingMap = LayoutAttrMap()
     
@@ -279,6 +281,8 @@ open class UICollectionViewCustomizableLayout<S> : UICollectionViewLayout where 
         }
         
     }
+    
+    internal typealias LayoutAttrMap = [IndexPath: UICollectionViewLayoutAttributes]
     
 }
 
@@ -342,6 +346,7 @@ private extension UICollectionViewCustomizableLayout {
                 })
             }
             .flatMap(calculateSize(for:))
+        mOldLayoutAttrMap = mLayoutAttrMap
         mLayoutAttrMap.removeAll()
         calculateProgressively()
         performSelector(onMainThread: #selector(UICollectionViewCustomizableLayout.calculateAheadOfTime), with: nil, waitUntilDone: false, modes: [RunLoop.Mode.default.rawValue])
@@ -439,8 +444,6 @@ private extension UICollectionViewCustomizableLayout {
     }
     
     typealias RectMap = [IndexPath: CGRect]
-    
-    typealias LayoutAttrMap = [IndexPath: UICollectionViewLayoutAttributes]
     
 }
 

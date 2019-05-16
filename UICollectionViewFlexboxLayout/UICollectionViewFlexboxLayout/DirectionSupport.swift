@@ -180,6 +180,14 @@ internal extension CGSize {
         return Vec(CGSize(width: width + distance.vec.hv, height: height), CGSize(width: width, height: height + distance.vec.vv))
     }
     
+    @inline(__always) func axisChange(to dest: FloatingVecConvertible) -> Vec<CGSize> {
+        return Vec(CGSize(width: width, height: dest.vec.hv), CGSize(width: dest.vec.vv, height: height))
+    }
+    
+    @inline(__always) func crossChange(to dest: FloatingVecConvertible) -> Vec<CGSize> {
+        return Vec(CGSize(width: dest.vec.hv, height: height), CGSize(width: width, height: dest.vec.vv))
+    }
+    
 }
 
 internal extension UIEdgeInsets {

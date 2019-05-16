@@ -107,7 +107,6 @@
                                 <connections>
                                     <outlet property="dataSource" destination="BYZ-38-t0r" id="fov-iE-19z"/>
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="Osk-mk-45x"/>
-                                    <outletCollection property="gestureRecognizers" destination="SWD-Ha-7VJ" appends="YES" id="bMM-VL-4w2"/>
                                 </connections>
                             </collectionView>
                         </subviews>
@@ -133,11 +132,6 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="SWD-Ha-7VJ">
-                    <connections>
-                        <action selector="didRecognizeLongGesture:" destination="BYZ-38-t0r" id="xsi-FG-trR"/>
-                    </connections>
-                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1251" y="-110"/>
         </scene>
@@ -266,7 +260,6 @@
                                 <connections>
                                     <outlet property="dataSource" destination="vto-JB-BSE" id="QFH-EM-hB2"/>
                                     <outlet property="delegate" destination="vto-JB-BSE" id="aQj-dG-xI7"/>
-                                    <outletCollection property="gestureRecognizers" destination="nS8-hm-Enh" appends="YES" id="pcd-dr-Ow4"/>
                                 </connections>
                             </collectionView>
                         </subviews>
@@ -295,11 +288,6 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PL3-oX-CjO" sceneMemberID="firstResponder"/>
-                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="nS8-hm-Enh">
-                    <connections>
-                        <action selector="didRecognizeLongGesture:" destination="vto-JB-BSE" id="8Oe-of-Mwo"/>
-                    </connections>
-                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1223" y="600"/>
         </scene>

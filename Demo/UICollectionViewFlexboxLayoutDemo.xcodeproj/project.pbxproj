@@ -41,8 +41,6 @@
 		C42C7B022266D8B600BF9F99 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C42C7B052266D8B600BF9F99 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C42C7B072266D8B600BF9F99 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C4966901228AD9710084610D /* UICollectionViewFlexboxLayout.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UICollectionViewFlexboxLayout.framework; path = "../../../Library/Developer/Xcode/DerivedData/UICollectionViewFlexboxLayout-ajpiejdpkaklzieweeonzdnfizyw/Build/Products/Debug-iphoneos/UICollectionViewFlexboxLayout.framework"; sourceTree = "<group>"; };
-		C4966904228AD9E80084610D /* UICollectionViewFlexboxLayout.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = UICollectionViewFlexboxLayout.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4966906228AD9EF0084610D /* UICollectionViewFlexboxLayout.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = UICollectionViewFlexboxLayout.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4D087742283DA5E00B5923D /* ControlPannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlPannel.swift; sourceTree = "<group>"; };
 		C4D087762283DCF100B5923D /* Intent.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intent.framework; path = Carthage/Build/iOS/Intent.framework; sourceTree = "<group>"; };
@@ -98,8 +96,6 @@
 		C4D7DE4B22716AE200F690D4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C4966904228AD9E80084610D /* UICollectionViewFlexboxLayout.framework */,
-				C4966901228AD9710084610D /* UICollectionViewFlexboxLayout.framework */,
 				C4D087762283DCF100B5923D /* Intent.framework */,
 				C4D7DE4C22716AE200F690D4 /* JWRefreshControl.framework */,
 			);

@@ -17,6 +17,8 @@ struct ItemModel {
     
     let crossAlignment: UICollectionViewFlexboxLayout.AlignItems?
     
+    let isCollapsed: Bool
+    
     let height: CGFloat
     
     let color: UIColor
@@ -26,13 +28,19 @@ struct ItemModel {
         self.height = height
         self.color = UIColor.clear
         self.crossAlignment = crossAlignment
+        self.isCollapsed = true
     }
     
-    init(widthPercent: CGFloat, height: CGFloat, color: UIColor, crossAlignment: UICollectionViewFlexboxLayout.AlignItems? = nil) {
+    init(widthPercent: CGFloat, height: CGFloat, color: UIColor, crossAlignment: UICollectionViewFlexboxLayout.AlignItems? = nil, isCollapsed: Bool = true) {
         self.widthPercent = widthPercent
         self.height = height
         self.color = color
         self.crossAlignment = crossAlignment
+        self.isCollapsed = isCollapsed
+    }
+    
+    func mutated(isCollapsed: Bool) -> ItemModel {
+        return ItemModel(widthPercent: widthPercent, height: height, color: color, crossAlignment: crossAlignment, isCollapsed: isCollapsed)
     }
     
 }
@@ -56,6 +64,13 @@ struct SectionModel {
         self.footer = footer.map { ItemModel(widthPercent: $0.widthPercent, height: $0.height, color: color, crossAlignment: $0.crossAlignment) }
         self.background = background
         self.insets = insets
+    }
+    
+    mutating func updateItem(forIndex index: Int, body: (ItemModel) -> ItemModel) {
+        guard index < items.count && index >= 0 else {
+            return
+        }
+        items[index] = body(items[index])
     }
 }
 
@@ -123,17 +138,6 @@ class ViewController: UIViewController {
     func mockDelay(_ action: @escaping () -> ()) {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             action()
-        }
-    }
-    
-    @IBAction func didRecognizeLongGesture(_ sender: UILongPressGestureRecognizer) {
-        guard case .began = sender.state else {
-            return
-        }
-        let point = sender.location(in: collectionView)
-        if let indexPath = collectionView.indexPathForItem(at: point) {
-            mData[indexPath.section].items.remove(at: indexPath.item)
-            collectionView.deleteItems(at: [indexPath])
         }
     }
     
@@ -206,8 +210,31 @@ extension ViewController : UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CellReuseIdentifier, for: indexPath)
-        cell.backgroundColor = mData[indexPath.section].items[indexPath.row].color
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CellReuseIdentifier, for: indexPath) as! ItemCell
+        cell.didToggleCollapseState = { [unowned self] mCell in
+            if let indexPath = self.collectionView.indexPath(for: mCell) {
+                self.mData[indexPath.section].updateItem(forIndex: indexPath.item) {
+                    $0.mutated(isCollapsed: !$0.isCollapsed)
+                }
+                self.collectionView.reloadItems(at: [indexPath])
+            }
+        }
+        cell.didClickDeleteBtn = { [unowned self] mCell in
+            if let indexPath = self.collectionView.indexPath(for: mCell) {
+                self.mData[indexPath.section].items.remove(at: indexPath.item)
+                self.collectionView.deleteItems(at: [indexPath])
+            }
+        }
+        cell.didClickAddBtn = { [unowned self] mCell in
+            if let indexPath = self.collectionView.indexPath(for: mCell) {
+                let newItem = self.mData[indexPath.section].items[indexPath.row]
+                self.mData[indexPath.section].items.insert(newItem, at: indexPath.row)
+                self.collectionView.insertItems(at: [IndexPath(item: indexPath.item + 1, section: indexPath.section)])
+            }
+        }
+        let itemModel = mData[indexPath.section].items[indexPath.row]
+        cell.backgroundColor = itemModel.color
+        cell.updateCollapsedState(itemModel.isCollapsed)
         (cell.contentView.subviews.first as! UILabel).text = indexPath.description
         return cell
     }
@@ -275,7 +302,7 @@ extension ViewController : UICollectionViewDelegateFlexboxLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let model = mData[indexPath.section].items[indexPath.row]
-        return CGSize(width: collectionView.bounds.width * model.widthPercent, height: model.height)
+        return CGSize(width: collectionView.bounds.width * model.widthPercent, height: model.height + (model.isCollapsed ? 0 : 30) )
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -307,6 +334,18 @@ class ItemCell : UICollectionViewCell {
     
     let label = UILabel()
     
+    let collapseBtn = UIButton()
+    
+    let addBtn = UIButton()
+    
+    let deleteBtn = UIButton()
+    
+    var didToggleCollapseState: ((UICollectionViewCell) -> ())?
+    
+    var didClickAddBtn: ((UICollectionViewCell) -> ())?
+    
+    var didClickDeleteBtn: ((UICollectionViewCell) -> ())?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -317,16 +356,53 @@ class ItemCell : UICollectionViewCell {
         setupView()
     }
     
+    @objc private func didClickAddBtn(with sender: UIButton) {
+        didClickAddBtn?(self)
+    }
+    
+    @objc private func didClickClickBtn(with sender: UIButton) {
+        didClickDeleteBtn?(self)
+    }
+    
+    @objc private func didClickCollapseBtn(with sender: UIButton) {
+        didToggleCollapseState?(self)
+    }
+    
+    func updateCollapsedState(_ isCollapsed: Bool) {
+        addBtn.isHidden = isCollapsed
+        deleteBtn.isHidden = isCollapsed
+    }
+    
     private func setupView() {
+        contentView.clipsToBounds = true
         contentView.addSubview(label)
+        contentView.addSubview(addBtn)
+        contentView.addSubview(deleteBtn)
+        contentView.addSubview(collapseBtn)
+        
+        collapseBtn.setTitle("*", for: .normal)
+        addBtn.setTitle("+", for: .normal)
+        deleteBtn.setTitle("-", for: .normal)
+        collapseBtn.addTarget(self, action: #selector(ItemCell.didClickCollapseBtn(with:)), for: .touchUpInside)
+        addBtn.addTarget(self, action: #selector(ItemCell.didClickAddBtn(with:)), for: .touchUpInside)
+        deleteBtn.addTarget(self, action: #selector(ItemCell.didClickClickBtn(with:)), for: .touchUpInside)
         label.textAlignment = .center
         label.textColor = UIColor.white
-        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        [collapseBtn, addBtn, deleteBtn, label].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
         NSLayoutConstraint.activate([
+            collapseBtn.rightAnchor.constraint(equalTo: contentView.rightAnchor),
+            collapseBtn.topAnchor.constraint(equalTo: contentView.topAnchor),
             label.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 10),
             label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             label.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -10),
             label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            deleteBtn.rightAnchor.constraint(equalTo: contentView.rightAnchor),
+            deleteBtn.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            addBtn.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            addBtn.rightAnchor.constraint(equalTo: deleteBtn.leftAnchor),
         ])
     }
     
