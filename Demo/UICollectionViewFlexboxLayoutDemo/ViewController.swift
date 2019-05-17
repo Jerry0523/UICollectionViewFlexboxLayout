@@ -302,7 +302,7 @@ extension ViewController : UICollectionViewDelegateFlexboxLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let model = mData[indexPath.section].items[indexPath.row]
-        return CGSize(width: collectionView.bounds.width * model.widthPercent, height: model.height + (model.isCollapsed ? 0 : 30) )
+        return CGSize(width: collectionView.bounds.width * model.widthPercent + (model.isCollapsed ? 0 : 30), height: model.height + (model.isCollapsed ? 0 : 30) )
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {

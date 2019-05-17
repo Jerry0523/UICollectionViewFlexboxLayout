@@ -122,9 +122,9 @@ open class UICollectionViewFlexboxLayout : UICollectionViewCustomizableLayout<Fl
         guard let mUpdateItems = mUpdateItems else {
             return nil
         }
-        if (mUpdateItems.filter { $0.updateAction == .reload && $0.indexPathAfterUpdate == itemIndexPath }).count > 0 {
+        if mUpdateItems.contains(action: .reload, for: \.indexPathAfterUpdate, and: itemIndexPath) {
             return mOldLayoutAttrMap?[itemIndexPath.shift(with: mUpdateItems, isReversed: true)]
-        } else if (mUpdateItems.filter { $0.updateAction == .insert && $0.indexPathAfterUpdate == itemIndexPath }).count > 0,
+        } else if mUpdateItems.contains(action: .insert, for: \.indexPathAfterUpdate, and: itemIndexPath),
             let insertedAttr = mLayoutAttrMap[itemIndexPath]?.copy() as? UICollectionViewLayoutAttributes {
             var frame = insertedAttr.frame
             if let nextBeforeAttr = mOldLayoutAttrMap?[itemIndexPath.next().shift(with: mUpdateItems, isReversed: true)],
@@ -150,12 +150,12 @@ open class UICollectionViewFlexboxLayout : UICollectionViewCustomizableLayout<Fl
         guard let mUpdateItems = mUpdateItems else {
             return nil
         }
-        if (mUpdateItems.filter { $0.updateAction == .reload && $0.indexPathBeforeUpdate == itemIndexPath }.count > 0),
+        if mUpdateItems.contains(action: .reload, for: \.indexPathBeforeUpdate, and: itemIndexPath),
             let beforeAttr = mOldLayoutAttrMap?[itemIndexPath],
             let afterAttr = mLayoutAttrMap[itemIndexPath] {
-            return beforeAttr.frame.cross.take(scrollDirection) < afterAttr.frame.cross.take(scrollDirection) ? beforeAttr : afterAttr
+            return ((beforeAttr.frame.cross - afterAttr.frame.cross).take(scrollDirection) < 0 && (beforeAttr.frame.crossMin - afterAttr.frame.crossMin).take(scrollDirection) == 0 ) ? beforeAttr : afterAttr
         } else if let cachedAttr = mOldLayoutAttrMap?[itemIndexPath]?.copy() as? UICollectionViewLayoutAttributes,
-            (mUpdateItems.filter { $0.updateAction == .delete && $0.indexPathBeforeUpdate == itemIndexPath }.count > 0) {
+                  mUpdateItems.contains(action: .delete, for: \.indexPathBeforeUpdate, and: itemIndexPath) {
             var frame = cachedAttr.frame
             if let nextBeforeAttr = mOldLayoutAttrMap?[itemIndexPath.next()],
                let nextAfterAttr = mLayoutAttrMap[itemIndexPath.next().shift(with: mUpdateItems)] {
@@ -175,9 +175,19 @@ open class UICollectionViewFlexboxLayout : UICollectionViewCustomizableLayout<Fl
             return mLayoutAttrMap[itemIndexPath.shift(with: mUpdateItems)]
         }
     }
-    
+
     private var mUpdateItems: [UICollectionViewUpdateItem]?
 
+}
+
+internal extension Array where Element == UICollectionViewUpdateItem {
+    
+    func contains(action: UICollectionViewUpdateItem.Action, for keyPath: KeyPath<UICollectionViewUpdateItem, IndexPath?>, and indexPath: IndexPath) -> Bool {
+        return filter {
+            $0.updateAction == action && $0[keyPath: keyPath] == indexPath
+        }.count > 0
+    }
+    
 }
 
 internal extension IndexPath {
