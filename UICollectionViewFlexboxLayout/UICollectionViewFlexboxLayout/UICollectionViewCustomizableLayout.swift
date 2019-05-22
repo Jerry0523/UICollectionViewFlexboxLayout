@@ -128,7 +128,12 @@ open class UICollectionViewCustomizableLayout<S> : UICollectionViewLayout where 
     
     open override func prepare() {
         super.prepare()
-        calculateIfNeeded()
+        doCalculate()
+    }
+    
+    open override func invalidateLayout(with context: UICollectionViewLayoutInvalidationContext) {
+        super.invalidateLayout(with: context)
+        shouldRecalculate = shouldRecalculate || context.shouldRecalculate
     }
     
     open override func shouldInvalidateLayout(forPreferredLayoutAttributes preferredAttributes: UICollectionViewLayoutAttributes, withOriginalAttributes originalAttributes: UICollectionViewLayoutAttributes) -> Bool {
@@ -138,16 +143,8 @@ open class UICollectionViewCustomizableLayout<S> : UICollectionViewLayout where 
             return false
         }
         mAutoSizingMap[preferredAttributes.indexPath] = preferredAttributes
-        isAutoSizing = true
+        shouldRecalculate = true
         return !(delegate.responds(to: #selector(UICollectionViewDelegateFlowLayout.collectionView(_:layout:sizeForItemAt:))))
-    }
-    
-    open override func invalidateLayout(with context: UICollectionViewLayoutInvalidationContext) {
-        let invalidCount = (context.invalidatedItemIndexPaths != nil ? context.invalidatedItemIndexPaths!.count : 0)
-            + (context.invalidatedSupplementaryIndexPaths != nil ? context.invalidatedSupplementaryIndexPaths!.count : 0)
-            + (context.invalidatedDecorationIndexPaths != nil ? context.invalidatedDecorationIndexPaths!.count : 0)
-        shouldRecalculate = shouldRecalculate || context.invalidateEverything || context.invalidateDataSourceCounts || invalidCount > 0
-        super.invalidateLayout(with: context)
     }
     
     open override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
@@ -166,7 +163,7 @@ open class UICollectionViewCustomizableLayout<S> : UICollectionViewLayout where 
         let ret = pageList[lowerBound...upperBound]
                     .flatMap{ $0 }
                     .reduce(into: [IndexPath: RectInfo](), { $0[$1.key] = $1 })
-                    .map{ $0.value.value.intersects(rect) ? $0.value : nil }
+                    .map{ isRectInfo($0, inside: rect) }
                     .compactMap(layoutAttributesForRectInfo)
         return ret
     }
@@ -227,13 +224,28 @@ open class UICollectionViewCustomizableLayout<S> : UICollectionViewLayout where 
         }
     }
     
-    private var shouldRecalculate = true
+    func isRectInfo(_ info: (key: IndexPath, value: RectInfo), inside rect: CGRect) -> RectInfo? {
+        return info.value.value.intersects(rect) ? info.value : nil
+    }
     
-    private var isAutoSizing = false
+    func layoutAttributesForCommon(at indexPath: IndexPath, attrConstructor: (IndexPath) -> UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes? {
+        if let cached = mLayoutAttrMap[indexPath] {
+            return cached
+        } else if let rect = mLayoutEngine?.rectMap[indexPath] {
+            let attr = attrConstructor(indexPath)
+            attr.frame = rect
+            mLayoutAttrMap[indexPath] = attr
+            return attr
+        } else {
+            return nil
+        }
+    }
     
-    private var mLayoutEngine: S?
+    private(set) var mLayoutEngine: S?
     
     private var mSizeInfos: [S.SizeType]?
+    
+    internal var shouldRecalculate = true
     
     internal var mOldLayoutAttrMap: LayoutAttrMap?
     
@@ -288,19 +300,6 @@ open class UICollectionViewCustomizableLayout<S> : UICollectionViewLayout where 
 
 private extension UICollectionViewCustomizableLayout {
     
-    func layoutAttributesForCommon(at indexPath: IndexPath, attrConstructor: (IndexPath) -> UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes? {
-        if let cached = mLayoutAttrMap[indexPath] {
-            return cached
-        } else if let rect = mLayoutEngine?.rectMap[indexPath] {
-            let attr = attrConstructor(indexPath)
-            attr.frame = rect
-            mLayoutAttrMap[indexPath] = attr
-            return attr
-        } else {
-            return nil
-        }
-    }
-    
     func layoutAttributesForRectInfo(_ info: RectInfo?) -> UICollectionViewLayoutAttributes? {
         guard let info = info else {
             return nil
@@ -318,27 +317,22 @@ private extension UICollectionViewCustomizableLayout {
         }
     }
     
-    func calculateIfNeeded() {
-        if let collectionView = collectionView, let engine = mLayoutEngine, collectionView.bounds.axis.take(scrollDirection) != engine.contentSize.axis.take(scrollDirection) {
-            shouldRecalculate = true
-        }
-        if shouldRecalculate || isAutoSizing {
-            doCalculate()
-            shouldRecalculate = false
-            isAutoSizing = false
-        }
-    }
-    
     func doCalculate() {
+        guard shouldRecalculate else {
+            return
+        }
         guard let dependency = self as? S.Dependency else {
             fatalError("a customizable layout must confirm to the engine's dependency protocol")
         }
         guard let collectionView = collectionView else {
             return
         }
+        defer {
+            shouldRecalculate = false
+        }
         NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(UICollectionViewCustomizableLayout.calculateAheadOfTime), object: nil)
         mCalculateState = .pending
-        mLayoutEngine = S.begin(with: collectionView, dependency: dependency)
+        mLayoutEngine = S.begin(with: dependency)
         mSizeInfos = (0..<collectionView.numberOfSections)
             .map { sectionIdx in
                 (sectionIdx, (0..<collectionView.numberOfItems(inSection: sectionIdx)).map {
@@ -356,7 +350,7 @@ private extension UICollectionViewCustomizableLayout {
         if case .done = mCalculateState {
             return
         }
-        guard let collectionViewHeight = collectionView?.bounds.cross.take(scrollDirection),
+        guard let collectionViewHeight = collectionView?.bounds.cross[scrollDirection],
               let collectionViewContentOffset = collectionView?.contentOffset,
                 let sizeInfos = mSizeInfos,
                 let engine = mLayoutEngine,
@@ -388,17 +382,17 @@ private extension UICollectionViewCustomizableLayout {
             if pageIndex != nil && Int((mCalculateState.initialHeight / collectionViewHeight).floored) - pageIndex! >= maxPageCount {
                 return
             }
-            let maxHeight = max(mCalculateState.initialHeight + CGFloat(maxPageCount) * collectionViewHeight, collectionViewContentOffset.cross.take(scrollDirection) + collectionViewHeight * 2)
+            let maxHeight = max(mCalculateState.initialHeight + CGFloat(maxPageCount) * collectionViewHeight, collectionViewContentOffset.cross[scrollDirection] + collectionViewHeight * 2)
             var currentOffset: Int?
             for pair in sizeInfos[mCalculateState.initialCursor...].enumerated() {
                 let (offset, sizeInfo) = pair
                 engine.append(sizeInfo)
                 let isDataEnough = {
                     pageIndex == nil || (
-                        Int((engine.contentSize.cross.take(self.scrollDirection) / collectionViewHeight).floored) - pageIndex! >= maxPageCount
+                        Int((engine.contentSize.cross[self.scrollDirection] / collectionViewHeight).floored) - pageIndex! >= maxPageCount
                     )
                 }
-                if engine.contentSize.cross.take(scrollDirection) >= maxHeight && isDataEnough() {
+                if engine.contentSize.cross[scrollDirection] >= maxHeight && isDataEnough() {
                     currentOffset = offset + mCalculateState.initialCursor
                     break
                 }
@@ -517,6 +511,26 @@ extension UICollectionViewDelegateExtFlowLayout {
         return false
     }
     
+}
+
+extension UICollectionViewLayoutInvalidationContext {
+    
+    var shouldRecalculate: Bool {
+        if invalidateEverything || invalidateDataSourceCounts {
+            return true
+        }
+        var count = 0
+        if let invalidatedItemIndexPaths = invalidatedItemIndexPaths {
+            count += invalidatedItemIndexPaths.count
+        }
+        if let invalidatedSupplementaryIndexPaths = invalidatedSupplementaryIndexPaths {
+            count += invalidatedSupplementaryIndexPaths.count
+        }
+        if let invalidatedDecorationIndexPaths = invalidatedDecorationIndexPaths {
+            count += invalidatedDecorationIndexPaths.count
+        }
+        return count > 0
+    }
 }
 
 internal enum SupplementaryIndex : Int {

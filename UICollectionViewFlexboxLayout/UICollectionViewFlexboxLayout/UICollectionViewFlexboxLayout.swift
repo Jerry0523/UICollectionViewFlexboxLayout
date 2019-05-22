@@ -10,9 +10,11 @@ import UIKit
 
 public protocol UICollectionViewDelegateFlexboxLayout : UICollectionViewDelegateExtFlowLayout {
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, justifyContentForSectionAt section: Int) -> UICollectionViewFlexboxLayout.JustifyContent
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, justifyContentForSectionAt section: Int) -> UICollectionViewFlexboxLayout.JustifyContent?
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, alignItemsForSectionAt section: Int) -> UICollectionViewFlexboxLayout.AlignItems
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, alignItemsForSectionAt section: Int) -> UICollectionViewFlexboxLayout.AlignItems?
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, flexWrapForSectionAt section: Int) -> UICollectionViewFlexboxLayout.FlexWrap?
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, alignSelfForItemAt indexPath: IndexPath) -> UICollectionViewFlexboxLayout.AlignSelf
     
@@ -24,12 +26,16 @@ public protocol UICollectionViewDelegateFlexboxLayout : UICollectionViewDelegate
 
 public extension UICollectionViewDelegateFlexboxLayout {
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, justifyContentForSectionAt section: Int) -> UICollectionViewFlexboxLayout.JustifyContent {
-        return .spaceBetween
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, justifyContentForSectionAt section: Int) -> UICollectionViewFlexboxLayout.JustifyContent? {
+        return nil
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, alignItemsForSectionAt section: Int) -> UICollectionViewFlexboxLayout.AlignItems {
-        return .center
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, alignItemsForSectionAt section: Int) -> UICollectionViewFlexboxLayout.AlignItems? {
+        return nil
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, flexWrapForSectionAt section: Int) -> UICollectionViewFlexboxLayout.FlexWrap? {
+        return nil
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, alignSelfForItemAt indexPath: IndexPath) -> UICollectionViewFlexboxLayout.AlignSelf {
@@ -47,6 +53,14 @@ public extension UICollectionViewDelegateFlexboxLayout {
 }
 
 open class UICollectionViewFlexboxLayout : UICollectionViewCustomizableLayout<FlexboxEngine> {
+    
+    public enum FlexWrap: Int {
+        
+        case wrap = 0
+        
+        case noWrap
+        
+    }
     
     public enum JustifyContent : Int {
         
@@ -107,6 +121,14 @@ open class UICollectionViewFlexboxLayout : UICollectionViewCustomizableLayout<Fl
         }
     }
     
+    open var flexWrap = FlexWrap.wrap {
+        didSet {
+            if oldValue != flexWrap {
+                invalidateLayout()
+            }
+        }
+    }
+    
     open override func prepare(forCollectionViewUpdates updateItems: [UICollectionViewUpdateItem]) {
         super.prepare(forCollectionViewUpdates: updateItems)
         mUpdateItems = updateItems
@@ -122,18 +144,18 @@ open class UICollectionViewFlexboxLayout : UICollectionViewCustomizableLayout<Fl
         guard let mUpdateItems = mUpdateItems else {
             return nil
         }
-        if mUpdateItems.contains(action: .reload, for: \.indexPathAfterUpdate, and: itemIndexPath) {
+        if mUpdateItems.contains(action: .reload, forKeyPath: \.indexPathAfterUpdate, and: itemIndexPath) {
             return mOldLayoutAttrMap?[itemIndexPath.shift(with: mUpdateItems, isReversed: true)]
-        } else if mUpdateItems.contains(action: .insert, for: \.indexPathAfterUpdate, and: itemIndexPath),
+        } else if mUpdateItems.contains(action: .insert, forKeyPath: \.indexPathAfterUpdate, and: itemIndexPath),
             let insertedAttr = mLayoutAttrMap[itemIndexPath]?.copy() as? UICollectionViewLayoutAttributes {
             var frame = insertedAttr.frame
             if let nextBeforeAttr = mOldLayoutAttrMap?[itemIndexPath.next().shift(with: mUpdateItems, isReversed: true)],
                 let nextAfterAttr = mLayoutAttrMap[itemIndexPath.next()] {
-                if nextAfterAttr.frame.crossMin.take(scrollDirection) != nextBeforeAttr.frame.crossMin.take(scrollDirection) {
-                    frame.size = frame.size.crossChange(to: CGFloat(0)).take(scrollDirection)
+                if (nextAfterAttr.frame.crossMin - nextBeforeAttr.frame.crossMin)[scrollDirection] != 0 {
+                    frame.size = frame.size.crossChange(to: CGFloat(0))[scrollDirection]
                 }
-                if nextAfterAttr.frame.axisMin.take(scrollDirection) != nextBeforeAttr.frame.axisMin.take(scrollDirection) {
-                    frame.size = frame.size.axisChange(to: CGFloat(0)).take(scrollDirection)
+                if (nextAfterAttr.frame.axisMin - nextBeforeAttr.frame.axisMin)[scrollDirection] != 0 {
+                    frame.size = frame.size.axisChange(to: CGFloat(0))[scrollDirection]
                 }
             } else {
                 frame.size = CGSize.zero
@@ -150,23 +172,23 @@ open class UICollectionViewFlexboxLayout : UICollectionViewCustomizableLayout<Fl
         guard let mUpdateItems = mUpdateItems else {
             return nil
         }
-        if mUpdateItems.contains(action: .reload, for: \.indexPathBeforeUpdate, and: itemIndexPath),
+        if mUpdateItems.contains(action: .reload, forKeyPath: \.indexPathBeforeUpdate, and: itemIndexPath),
             let beforeAttr = mOldLayoutAttrMap?[itemIndexPath],
             let afterAttr = mLayoutAttrMap[itemIndexPath] {
-            return ((beforeAttr.frame.cross - afterAttr.frame.cross).take(scrollDirection) < 0 && (beforeAttr.frame.crossMin - afterAttr.frame.crossMin).take(scrollDirection) == 0 ) ? beforeAttr : afterAttr
+            return ((beforeAttr.frame.cross - afterAttr.frame.cross)[scrollDirection] < 0 && (beforeAttr.frame.crossMin - afterAttr.frame.crossMin)[scrollDirection] == 0 ) ? beforeAttr : afterAttr
         } else if let cachedAttr = mOldLayoutAttrMap?[itemIndexPath]?.copy() as? UICollectionViewLayoutAttributes,
-                  mUpdateItems.contains(action: .delete, for: \.indexPathBeforeUpdate, and: itemIndexPath) {
+                  mUpdateItems.contains(action: .delete, forKeyPath: \.indexPathBeforeUpdate, and: itemIndexPath) {
             var frame = cachedAttr.frame
             if let nextBeforeAttr = mOldLayoutAttrMap?[itemIndexPath.next()],
                let nextAfterAttr = mLayoutAttrMap[itemIndexPath.next().shift(with: mUpdateItems)] {
-                if nextAfterAttr.frame.crossMin.take(scrollDirection) != nextBeforeAttr.frame.crossMin.take(scrollDirection) {
-                    frame.size = frame.size.crossChange(to: CGFloat(0)).take(scrollDirection)
+                if nextAfterAttr.frame.crossMin[scrollDirection] != nextBeforeAttr.frame.crossMin[scrollDirection] {
+                    frame.size = frame.size.crossChange(to: CGFloat(0))[scrollDirection]
                 }
-                if nextAfterAttr.frame.axisMin.take(scrollDirection) != nextBeforeAttr.frame.axisMin.take(scrollDirection) {
-                    frame.size = frame.size.axisChange(to: CGFloat(0)).take(scrollDirection)
+                if nextAfterAttr.frame.axisMin[scrollDirection] != nextBeforeAttr.frame.axisMin[scrollDirection] {
+                    frame.size = frame.size.axisChange(to: CGFloat(0))[scrollDirection]
                 }
             } else {
-                frame.size = frame.size.crossChange(to: CGFloat(0)).take(scrollDirection)
+                frame.size = frame.size.crossChange(to: CGFloat(0))[scrollDirection]
             }
             cachedAttr.frame = frame
             cachedAttr.alpha = 0
@@ -175,14 +197,18 @@ open class UICollectionViewFlexboxLayout : UICollectionViewCustomizableLayout<Fl
             return mLayoutAttrMap[itemIndexPath.shift(with: mUpdateItems)]
         }
     }
-
+    
+    public func flexWrap(in section: Int) -> UICollectionViewFlexboxLayout.FlexWrap {
+        return .wrap
+    }
+    
     private var mUpdateItems: [UICollectionViewUpdateItem]?
 
 }
 
 internal extension Array where Element == UICollectionViewUpdateItem {
     
-    func contains(action: UICollectionViewUpdateItem.Action, for keyPath: KeyPath<UICollectionViewUpdateItem, IndexPath?>, and indexPath: IndexPath) -> Bool {
+    func contains(action: UICollectionViewUpdateItem.Action, forKeyPath keyPath: KeyPath<UICollectionViewUpdateItem, IndexPath?>, and indexPath: IndexPath) -> Bool {
         return filter {
             $0.updateAction == action && $0[keyPath: keyPath] == indexPath
         }.count > 0
@@ -237,22 +263,30 @@ internal extension IndexPath {
 
 extension UICollectionViewFlexboxLayout : FlexboxEngineDependency {
     
-    private func withCollectionViewAndDelegate<R>(body: (UICollectionView, UICollectionViewDelegateFlexboxLayout) -> R) -> R? {
+    internal func withCollectionViewAndDelegate<R>(body: (UICollectionView, UICollectionViewDelegateFlexboxLayout) -> R) -> R? {
         guard let collectionView = collectionView, let delegate = collectionView.delegate as? UICollectionViewDelegateFlexboxLayout else {
             return nil
         }
         return body(collectionView, delegate)
     }
     
+    public var collectionViewBounds: CGRect {
+        return collectionView?.bounds ?? CGRect.zero
+    }
+    
+    public var collectionViewAdjustedContentInset: UIEdgeInsets {
+        return collectionView?.adjustedContentInset ?? UIEdgeInsets.zero
+    }
+    
     public func justifyContent(in section: Int) -> JustifyContent {
         return withCollectionViewAndDelegate { collectionView, delegate in
-            return delegate.collectionView(collectionView, layout: self, justifyContentForSectionAt: section)
+            return delegate.collectionView(collectionView, layout: self, justifyContentForSectionAt: section) ?? justifyContent
         } ?? justifyContent
     }
     
     public func alignItems(in section: Int) -> AlignItems {
         return withCollectionViewAndDelegate { collectionView, delegate in
-            return delegate.collectionView(collectionView, layout: self, alignItemsForSectionAt: section)
+            return delegate.collectionView(collectionView, layout: self, alignItemsForSectionAt: section) ?? alignItems
             } ?? alignItems
     }
     

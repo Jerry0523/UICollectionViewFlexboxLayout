@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C437F466229511E5004F9506 /* UICollectionViewAxisScrollableFlexboxLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C437F465229511E5004F9506 /* UICollectionViewAxisScrollableFlexboxLayout.swift */; };
 		C49668F4228ACFCB0084610D /* DirectionSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C49668F0228ACFCB0084610D /* DirectionSupport.swift */; };
 		C49668F5228ACFCB0084610D /* LayoutEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C49668F1228ACFCB0084610D /* LayoutEngine.swift */; };
 		C49668F6228ACFCB0084610D /* UICollectionViewCustomizableLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C49668F2228ACFCB0084610D /* UICollectionViewCustomizableLayout.swift */; };
@@ -14,6 +15,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C437F465229511E5004F9506 /* UICollectionViewAxisScrollableFlexboxLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICollectionViewAxisScrollableFlexboxLayout.swift; sourceTree = "<group>"; };
 		C49668E5228ACF700084610D /* UICollectionViewFlexboxLayout.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UICollectionViewFlexboxLayout.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C49668E9228ACF700084610D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C49668F0228ACFCB0084610D /* DirectionSupport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectionSupport.swift; sourceTree = "<group>"; };
@@ -56,6 +58,7 @@
 				C49668F1228ACFCB0084610D /* LayoutEngine.swift */,
 				C49668F2228ACFCB0084610D /* UICollectionViewCustomizableLayout.swift */,
 				C49668F3228ACFCB0084610D /* UICollectionViewFlexboxLayout.swift */,
+				C437F465229511E5004F9506 /* UICollectionViewAxisScrollableFlexboxLayout.swift */,
 				C49668E9228ACF700084610D /* Info.plist */,
 			);
 			path = UICollectionViewFlexboxLayout;
@@ -141,6 +144,7 @@
 			files = (
 				C49668F4228ACFCB0084610D /* DirectionSupport.swift in Sources */,
 				C49668F7228ACFCB0084610D /* UICollectionViewFlexboxLayout.swift in Sources */,
+				C437F466229511E5004F9506 /* UICollectionViewAxisScrollableFlexboxLayout.swift in Sources */,
 				C49668F5228ACFCB0084610D /* LayoutEngine.swift in Sources */,
 				C49668F6228ACFCB0084610D /* UICollectionViewCustomizableLayout.swift in Sources */,
 			);

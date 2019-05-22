@@ -8,28 +8,33 @@
 
 import UIKit
 
-internal struct Vec<T> {
+internal protocol VecCondition {
     
-    let hv: T
+    func read<T>(_ input: Vec2<T>) -> T
     
-    let vv: T
+    func write<T>(_ value: T, into: inout Vec2<T>)
     
-    init(_ v: T) {
-        hv = v
-        vv = v
-    }
+}
+
+extension UICollectionView.ScrollDirection : VecCondition {
     
-    init(_ hv: T, _ vv: T) {
-        self.hv = hv
-        self.vv = vv
-    }
-    
-    @inline(__always) func take(_ direction: UICollectionView.ScrollDirection) -> T {
-        switch direction {
+    func read<T>(_ input: Vec2<T>) -> T {
+        switch self {
         case .horizontal:
-            return hv
+            return input.v0
         case .vertical:
-            return vv
+            return input.v1
+        @unknown default:
+            fatalError()
+        }
+    }
+    
+    func write<T>(_ value: T, into: inout Vec2<T>) {
+        switch self {
+        case .horizontal:
+            into.v0 = value
+        case .vertical:
+            into.v1 = value
         @unknown default:
             fatalError()
         }
@@ -37,16 +42,43 @@ internal struct Vec<T> {
     
 }
 
+internal struct Vec2<Value> {
+    
+    var v0: Value
+    
+    var v1: Value
+    
+    init(_ v: Value) {
+        v0 = v
+        v1 = v
+    }
+    
+    init(_ v0: Value, _ v1: Value) {
+        self.v0 = v0
+        self.v1 = v1
+    }
+    
+    subscript(condition: VecCondition) -> Value {
+        get {
+           return condition.read(self)
+        }
+        set {
+            condition.write(newValue, into: &self)
+        }
+    }
+    
+}
+
 internal protocol FloatingVecConvertible {
     
-    var vec: Vec<CGFloat> { get }
+    var vec: Vec2<CGFloat> { get }
     
 }
 
 extension CGFloat : FloatingVecConvertible {
     
-    var vec: Vec<CGFloat> {
-        return Vec(self)
+    var vec: Vec2<CGFloat> {
+        return Vec2(self)
     }
     
     var floored: CGFloat {
@@ -59,153 +91,167 @@ extension CGFloat : FloatingVecConvertible {
     
 }
 
-extension Vec : FloatingVecConvertible where T == CGFloat {
+extension Vec2 : FloatingVecConvertible where Value == CGFloat {
     
-    var vec: Vec<CGFloat> {
+    var vec: Vec2<CGFloat> {
         return self
     }
     
-    var floored: Vec {
-        return Vec(hv.floored, vv.floored)
+    var floored: Vec2 {
+        return Vec2(v0.floored, v1.floored)
     }
 }
 
-extension Vec where T == CGFloat {
+extension Vec2 where Value == CGFloat {
     
-    static func / (lhs: Vec, rhs: CGFloat) -> Vec {
-        return Vec(lhs.hv / rhs, lhs.vv / rhs)
+    static func / (lhs: Vec2, rhs: CGFloat) -> Vec2 {
+        return Vec2(lhs.v0 / rhs, lhs.v1 / rhs)
     }
     
-    static func * (lhs: Vec, rhs: CGFloat) -> Vec {
-        return Vec(lhs.hv * rhs, lhs.vv * rhs)
+    static func * (lhs: Vec2, rhs: CGFloat) -> Vec2 {
+        return Vec2(lhs.v0 * rhs, lhs.v1 * rhs)
     }
     
-    static func + (lhs: Vec, rhs: Vec) -> Vec {
-        return Vec(lhs.hv + rhs.hv, lhs.vv + rhs.vv)
+    static func + (lhs: Vec2, rhs: Vec2) -> Vec2 {
+        return Vec2(lhs.v0 + rhs.v0, lhs.v1 + rhs.v1)
     }
     
-    static func - (lhs: Vec, rhs: Vec) -> Vec {
-        return Vec(lhs.hv - rhs.hv, lhs.vv - rhs.vv)
+    static func - (lhs: Vec2, rhs: Vec2) -> Vec2 {
+        return Vec2(lhs.v0 - rhs.v0, lhs.v1 - rhs.v1)
     }
     
 }
 
-extension Vec where T == CGPoint {
+extension Vec2 where Value == CGRect {
+    
+    init(origin: Vec2<CGPoint>, size: Vec2<CGSize>) {
+        self.init(CGRect(origin: origin.v0, size: size.v0), CGRect(origin: origin.v1, size: size.v1))
+    }
+    
+}
+
+extension Vec2 where Value == CGPoint {
     
     init(axis: FloatingVecConvertible, cross: FloatingVecConvertible) {
-        self.init(CGPoint(x: cross.vec.hv, y: axis.vec.hv), CGPoint(x: axis.vec.vv, y: cross.vec.vv))
+        self.init(CGPoint(x: cross.vec.v0, y: axis.vec.v0), CGPoint(x: axis.vec.v1, y: cross.vec.v1))
     }
     
 }
 
-extension Vec where T == CGSize {
+extension Vec2 where Value == CGSize {
     
     init(axis: FloatingVecConvertible, cross: FloatingVecConvertible) {
-        self.init(CGSize(width: cross.vec.hv, height: axis.vec.hv), CGSize(width: axis.vec.vv, height: cross.vec.vv))
+        self.init(CGSize(width: cross.vec.v0, height: axis.vec.v0), CGSize(width: axis.vec.v1, height: cross.vec.v1))
     }
     
+}
+
+extension Vec2 where Value == CGAffineTransform {
+    init(axis: FloatingVecConvertible, cross: FloatingVecConvertible) {
+        self.init(CGAffineTransform(translationX: cross.vec.v0, y: axis.vec.v0), CGAffineTransform(translationX: axis.vec.v1, y: cross.vec.v1))
+    }
 }
 
 internal extension CGPoint {
     
-    var axis: Vec<CGFloat> {
-        return Vec(y, x)
+    var axis: Vec2<CGFloat> {
+        return Vec2(y, x)
     }
     
-    var cross: Vec<CGFloat> {
-        return Vec(x, y)
+    var cross: Vec2<CGFloat> {
+        return Vec2(x, y)
     }
     
-    @inline(__always) func crossMove(_ distance: FloatingVecConvertible) -> Vec<CGPoint> {
-        return Vec(CGPoint(x: x + distance.vec.hv, y: y), CGPoint(x: x, y: y + distance.vec.vv))
+    @inline(__always) func crossMove(_ distance: FloatingVecConvertible) -> Vec2<CGPoint> {
+        return Vec2(CGPoint(x: x + distance.vec.v0, y: y), CGPoint(x: x, y: y + distance.vec.v1))
     }
     
-    @inline(__always) func axisChange(to dest: FloatingVecConvertible) -> Vec<CGPoint> {
-        return Vec(CGPoint(x: x, y: dest.vec.hv), CGPoint(x: dest.vec.vv, y: y))
+    @inline(__always) func axisChange(to dest: FloatingVecConvertible) -> Vec2<CGPoint> {
+        return Vec2(CGPoint(x: x, y: dest.vec.v0), CGPoint(x: dest.vec.v1, y: y))
     }
     
-    @inline(__always) func axisMove(_ distance: FloatingVecConvertible) -> Vec<CGPoint> {
-        return Vec(CGPoint(x: x, y: y + distance.vec.hv), CGPoint(x: x + distance.vec.vv, y: y))
+    @inline(__always) func axisMove(_ distance: FloatingVecConvertible) -> Vec2<CGPoint> {
+        return Vec2(CGPoint(x: x, y: y + distance.vec.v0), CGPoint(x: x + distance.vec.v1, y: y))
     }
     
 }
 
 internal extension CGRect {
     
-    var axis: Vec<CGFloat> {
-        return Vec(height, width)
+    var axis: Vec2<CGFloat> {
+        return Vec2(height, width)
     }
     
-    var axisMin: Vec<CGFloat> {
-        return Vec(minY, minX)
+    var axisMin: Vec2<CGFloat> {
+        return Vec2(minY, minX)
     }
     
-    var axisMax: Vec<CGFloat> {
-        return Vec(maxY, maxX)
+    var axisMax: Vec2<CGFloat> {
+        return Vec2(maxY, maxX)
     }
     
-    var cross: Vec<CGFloat> {
-        return Vec(width, height)
+    var cross: Vec2<CGFloat> {
+        return Vec2(width, height)
     }
     
-    var crossMin: Vec<CGFloat> {
-        return Vec(minX, minY)
+    var crossMin: Vec2<CGFloat> {
+        return Vec2(minX, minY)
     }
     
-    var crossMax: Vec<CGFloat> {
-        return Vec(maxX, maxY)
+    var crossMax: Vec2<CGFloat> {
+        return Vec2(maxX, maxY)
     }
     
 }
 
 internal extension CGSize {
     
-    var axis: Vec<CGFloat> {
-        return Vec(height, width)
+    var axis: Vec2<CGFloat> {
+        return Vec2(height, width)
     }
     
-    var cross: Vec<CGFloat> {
-        return Vec(width, height)
+    var cross: Vec2<CGFloat> {
+        return Vec2(width, height)
     }
     
     var floored: CGSize {
         return CGSize(width: width.floored, height: height.floored)
     }
     
-    @inline(__always) func axisGrow(_ distance: FloatingVecConvertible) -> Vec<CGSize> {
-        return Vec(CGSize(width: width, height: height + distance.vec.hv), CGSize(width: width + distance.vec.vv, height: height))
+    @inline(__always) func axisGrow(_ distance: FloatingVecConvertible) -> Vec2<CGSize> {
+        return Vec2(CGSize(width: width, height: height + distance.vec.v0), CGSize(width: width + distance.vec.v1, height: height))
     }
     
-    @inline(__always) func crossGrow(_ distance: FloatingVecConvertible) -> Vec<CGSize> {
-        return Vec(CGSize(width: width + distance.vec.hv, height: height), CGSize(width: width, height: height + distance.vec.vv))
+    @inline(__always) func crossGrow(_ distance: FloatingVecConvertible) -> Vec2<CGSize> {
+        return Vec2(CGSize(width: width + distance.vec.v0, height: height), CGSize(width: width, height: height + distance.vec.v1))
     }
     
-    @inline(__always) func axisChange(to dest: FloatingVecConvertible) -> Vec<CGSize> {
-        return Vec(CGSize(width: width, height: dest.vec.hv), CGSize(width: dest.vec.vv, height: height))
+    @inline(__always) func axisChange(to dest: FloatingVecConvertible) -> Vec2<CGSize> {
+        return Vec2(CGSize(width: width, height: dest.vec.v0), CGSize(width: dest.vec.v1, height: height))
     }
     
-    @inline(__always) func crossChange(to dest: FloatingVecConvertible) -> Vec<CGSize> {
-        return Vec(CGSize(width: dest.vec.hv, height: height), CGSize(width: width, height: dest.vec.vv))
+    @inline(__always) func crossChange(to dest: FloatingVecConvertible) -> Vec2<CGSize> {
+        return Vec2(CGSize(width: dest.vec.v0, height: height), CGSize(width: width, height: dest.vec.v1))
     }
     
 }
 
 internal extension UIEdgeInsets {
     
-    var axisMin: Vec<CGFloat> {
-        return Vec(top, left)
+    var axisMin: Vec2<CGFloat> {
+        return Vec2(top, left)
     }
     
-    var axisMax: Vec<CGFloat> {
-        return Vec(bottom, right)
+    var axisMax: Vec2<CGFloat> {
+        return Vec2(bottom, right)
     }
     
-    var crossMin: Vec<CGFloat> {
-        return Vec(left, top)
+    var crossMin: Vec2<CGFloat> {
+        return Vec2(left, top)
     }
     
-    var crossMax: Vec<CGFloat> {
-        return Vec(bottom, right)
+    var crossMax: Vec2<CGFloat> {
+        return Vec2(bottom, right)
     }
     
     var floored: UIEdgeInsets {
@@ -214,3 +260,10 @@ internal extension UIEdgeInsets {
     
 }
 
+@inline(__always) internal func max<T>(_ x: Vec2<T>, _ y: Vec2<T>) -> Vec2<T> where T : Comparable {
+    return Vec2(max(x.v0, y.v0), max(x.v1, y.v1))
+}
+
+@inline(__always) internal func min<T>(_ x: Vec2<T>, _ y: Vec2<T>) -> Vec2<T> where T : Comparable {
+    return Vec2(min(x.v0, y.v0), min(x.v1, y.v1))
+}

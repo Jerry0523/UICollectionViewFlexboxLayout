@@ -74,7 +74,7 @@ public protocol LayoutEngine {
     
     var contentSize: CGSize { get }
     
-    static func begin(with collectionView: UICollectionView, dependency: Dependency) -> Self
+    static func begin(with dependency: Dependency) -> Self
     
     func pageIndex(for rect: CGRect) -> ClosedRange<Int>
     
@@ -106,6 +106,8 @@ public final class FlexboxEngine : LayoutEngine {
     
     public var contentSize = CGSize.zero
     
+    private(set) var sectionInfo = [SectionIntermedia]()
+    
     private let sd: UICollectionView.ScrollDirection
     
     private var crossPageInfo = [RectInfo]()
@@ -114,20 +116,24 @@ public final class FlexboxEngine : LayoutEngine {
     
     private var currentOrigin = CGPoint.zero
     
-    private var currentCrossDimension = CGFloat(0)
+    private var currentCrossDimension = CGFloat(0).vec
     
     private var currentLineRectInfo = [RectIntermedia]()
     
     public func finalize() {
         if let lastElement = currentLineRectInfo.last {
             breakLine()
-            contentSize = contentSize.crossGrow(dependency.insets(in: lastElement.section).crossMax).take(sd)
+            pushCurrentSection()
+            if dependency.flexWrap(in: lastElement.section) == .noWrap {
+                 contentSize = contentSize.axisGrow(dependency.insets(in: lastElement.section).axisMax)[sd]
+            }
+            contentSize = contentSize.crossGrow(dependency.insets(in: lastElement.section).crossMax)[sd]
         }
     }
     
     public func pageIndex(for rect: CGRect) -> ClosedRange<Int> {
-        let lowerPageIdx = max(0, (rect.crossMin / PageHeight).take(sd))
-        let upperPageIdx = max(lowerPageIdx, (rect.crossMax / PageHeight).take(sd))
+        let lowerPageIdx = max(0, (rect.crossMin / PageHeight)[sd])
+        let upperPageIdx = max(lowerPageIdx, (rect.crossMax / PageHeight)[sd])
         
         let lowerPageIdxVal = Int(lowerPageIdx.floored)
         let upperPageIdxVal = Int(upperPageIdx.ceiled)
@@ -135,7 +141,8 @@ public final class FlexboxEngine : LayoutEngine {
     }
     
     public func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
-        return dimensionConstraint.axis.take(sd) != newBounds.axis.take(sd)
+        let insets = dependency.collectionViewAdjustedContentInset
+        return (dependency.collectionViewBounds.size.axis - insets.axisMin - insets.axisMax - dimensionConstraint.axis)[sd] != 0
     }
     
     private init(dependency: FlexboxEngineDependency,
@@ -170,11 +177,11 @@ public final class FlexboxEngine : LayoutEngine {
             case .start:
                 break
             case .end:
-                rect.origin = rect.origin.crossMove(lineHeight.vec - rect.size.cross).take(sd)
+                rect.origin = rect.origin.crossMove(lineHeight.vec - rect.size.cross)[sd]
             case .center:
-                rect.origin = rect.origin.crossMove(((lineHeight.vec - rect.size.cross) * 0.5).floored).take(sd)
+                rect.origin = rect.origin.crossMove(((lineHeight.vec - rect.size.cross) * 0.5).floored)[sd]
             case .stretch:
-                rect.size = rect.size.crossGrow(lineHeight.vec - rect.size.cross).take(sd)
+                rect.size = rect.size.crossGrow(lineHeight.vec - rect.size.cross)[sd]
             }
             return $0.shift{ $0 = rect }
         }
@@ -188,7 +195,7 @@ public final class FlexboxEngine : LayoutEngine {
         let insets = dependency.insets(in: currentSection.index)
         
         let totalValidSpace = dimensionConstraint.axis - insets.axisMin - insets.axisMax
-        let totalItemSize = currentLineRectInfo.lazy.reduce(into: Vec(0)) { $0 = $0 + $1.value.size.axis }
+        let totalItemSize = currentLineRectInfo.lazy.reduce(into: Vec2(0)) { $0 = $0 + $1.value.size.axis }
         
         switch justifyContent {
         case .start:
@@ -197,14 +204,14 @@ public final class FlexboxEngine : LayoutEngine {
             let fixedOffset = dimensionConstraint.axis - last.value.axisMax - insets.axisMax
             currentLineRectInfo = currentLineRectInfo.map {
                 $0.shift {
-                    $0.origin = $0.origin.axisMove(fixedOffset).take(sd)
+                    $0.origin = $0.origin.axisMove(fixedOffset)[sd]
                 }
             }
         case .center:
             let fixedOffset = ((totalValidSpace - (last.value.axisMax - first.value.axisMin)) * 0.5).floored
             currentLineRectInfo = currentLineRectInfo.map {
                 $0.shift{
-                    $0.origin = $0.origin.axisMove(fixedOffset).take(sd)
+                    $0.origin = $0.origin.axisMove(fixedOffset)[sd]
                 }
             }
         case .spaceAround:
@@ -213,7 +220,7 @@ public final class FlexboxEngine : LayoutEngine {
                 let halfSpacing = (itemSpacing * 0.5).floored
                 currentLineRectInfo = currentLineRectInfo.reduce(into: (insets.axisMin - halfSpacing, [RectIntermedia]())) {
                     var rect = $1.value
-                    rect.origin = rect.origin.axisChange(to: $0.0 + itemSpacing).take(sd)
+                    rect.origin = rect.origin.axisChange(to: $0.0 + itemSpacing)[sd]
                     $0.0 = rect.axisMax
                     $0.1.append($1.shift{ $0 = rect })
                     }.1
@@ -223,7 +230,7 @@ public final class FlexboxEngine : LayoutEngine {
                 let itemSpacing = ((totalValidSpace - totalItemSize) / CGFloat(currentLineRectInfo.count - 1)).floored
                 currentLineRectInfo = currentLineRectInfo.reduce(into: (insets.axisMin - itemSpacing, [RectIntermedia]())) {
                     var rect = $1.value
-                    rect.origin = rect.origin.axisChange(to: $0.0 + itemSpacing).take(sd)
+                    rect.origin = rect.origin.axisChange(to: $0.0 + itemSpacing)[sd]
                     var ret = $0.1
                     ret.append($1.shift{ $0 = rect })
                     $0 = (rect.axisMax, ret)
@@ -238,10 +245,13 @@ public final class FlexboxEngine : LayoutEngine {
               let maxX = currentLineRectInfo.last?.value.axisMax else {
             return
         }
+        guard dependency.flexWrap(in: firstItem.section) == .wrap else {
+            return
+        }
         let minX = firstItem.value.axisMin
         let insets = dependency.insets(in: currentSection.index)
         let deltaX = dimensionConstraint.axis - insets.axisMin - insets.axisMax - (maxX - minX)
-        if deltaX.take(sd) > 0 {
+        if deltaX[sd] > 0 {
             let growRatio = currentLineRectInfo.reduce(into: 0) {
                 $0 += abs($1.grow)
             }
@@ -249,13 +259,13 @@ public final class FlexboxEngine : LayoutEngine {
                 currentLineRectInfo = currentLineRectInfo.reduce(into: (CGFloat(0).vec, [RectIntermedia]())) { result, info in
                     let fixedX = (deltaX * abs(info.grow) / growRatio).floored
                     result.1.append(info.shift { rect in
-                        rect.origin = rect.origin.axisMove(result.0).take(sd)
-                        rect.size = rect.size.axisGrow(fixedX).take(sd)
+                        rect.origin = rect.origin.axisMove(result.0)[sd]
+                        rect.size = rect.size.axisGrow(fixedX)[sd]
                     })
                     result.0 = result.0 + fixedX
                 }.1
             }
-        } else if deltaX.take(sd) < 0 {
+        } else if deltaX[sd] < 0 {
             let shrinkRatio = currentLineRectInfo.reduce(into: 0) {
                 $0 += abs($1.shrink)
             }
@@ -263,8 +273,8 @@ public final class FlexboxEngine : LayoutEngine {
                 currentLineRectInfo = currentLineRectInfo.reduce(into: (CGFloat(0).vec, [RectIntermedia]())) { result, info in
                     let fixedX = (deltaX * abs(info.shrink) / shrinkRatio).floored
                     result.1.append(info.shift { rect in
-                        rect.origin = rect.origin.axisMove(result.0).take(sd)
-                        rect.size = rect.size.axisGrow(fixedX).take(sd)
+                        rect.origin = rect.origin.axisMove(result.0)[sd]
+                        rect.size = rect.size.axisGrow(fixedX)[sd]
                     })
                     result.0 = result.0 + fixedX
                 }.1
@@ -272,29 +282,42 @@ public final class FlexboxEngine : LayoutEngine {
         }
     }
     
+    private func pushCurrentSection() {
+        currentSection.finallize(Vec2(axis: currentOrigin.axis, cross: currentOrigin.cross + currentCrossDimension)[sd])
+        if sectionInfo.count <= currentSection.index {
+            sectionInfo.append(currentSection)
+        } else {
+            sectionInfo[currentSection.index] = currentSection
+        }
+    }
+    
     private func breakLine(for reason: LineBreakReason = .items) {
         guard let lastRectInfo = currentLineRectInfo.last else {
             return
         }
-        
         applyCrossAlignment()
         applyAxisDistribution()
         fixGrowAndShrink()
         currentLineRectInfo.forEach{ loadRectIntermediaIntoPage($0) }
-        contentSize = Vec(axis: dimensionConstraint.axis, cross: lastRectInfo.value.crossMax).take(sd)
-        currentOrigin = Vec(axis: CGFloat(0).vec, cross: currentOrigin.cross + currentCrossDimension.vec).take(sd)
-        currentCrossDimension = 0
-        currentLineRectInfo.removeAll()
+        contentSize = Vec2(axis: max(dimensionConstraint.axis, contentSize.axis), cross: lastRectInfo.value.crossMax)[sd]
         switch reason {
         case .header:
             break
         case .items:
-            currentSection = currentSection.nextLine()
+            currentSection.breakLine()
         case .section:
-            currentSection = currentSection.next(startPoint: currentOrigin)
+            if dependency.flexWrap(in: currentSection.index) == .noWrap {
+                contentSize = contentSize.axisGrow(dependency.insets(in: currentSection.index).axisMax)[sd]
+            }
+            pushCurrentSection()
+            currentSection = currentSection.next(startPoint: Vec2(axis: CGFloat(0).vec, cross: currentOrigin.cross + currentCrossDimension)[sd])
         case .footer:
-            currentSection = SectionIntermedia(index: lastRectInfo.section, lineCount: SupplementaryIndex.footer.rawValue, startPoint: currentSection.startPoint)
+            currentSection.finallize(Vec2(axis: currentOrigin.axis, cross: currentOrigin.cross + currentCrossDimension)[sd])
+            currentSection.exit()
         }
+        currentOrigin = Vec2(axis: CGFloat(0).vec, cross: currentOrigin.cross + currentCrossDimension)[sd]
+        currentCrossDimension = CGFloat(0).vec
+        currentLineRectInfo.removeAll()
     }
     
     public func measureHeader(at section: Int) -> SizeInfo? {
@@ -333,16 +356,16 @@ public final class FlexboxEngine : LayoutEngine {
     }
     
     public func appendBackground(_ sizeInfo: SizeInfo) {
-        var newRect = CGRect(origin: currentSection.startPoint, size: Vec(axis: dimensionConstraint.axis, cross: currentOrigin.cross + currentCrossDimension.vec - currentSection.startPoint.cross).take(sd))
+        var newRect = Vec2(origin: Vec2(currentSection.startPoint), size: Vec2(axis: dimensionConstraint.axis, cross: currentOrigin.cross + currentCrossDimension - currentSection.startPoint.cross))[sd]
         if let lastElement = currentLineRectInfo.last, !lastElement.isHeaderFooter {
-            newRect.size = newRect.size.crossGrow(dependency.insets(in: currentSection.index).crossMax).take(sd)
+            newRect.size = newRect.size.crossGrow(dependency.insets(in: currentSection.index).crossMax)[sd]
         }
         let backgroundInfo = RectIntermedia(key: sizeInfo.key, value: newRect, grow: 0, shrink: 0)
         loadRectIntermediaIntoPage(backgroundInfo)
     }
     
     public func append(_ sizeInfo: SizeInfo) {
-        guard dimensionConstraint.cross.take(sd) > 0 else {
+        guard dimensionConstraint.cross[sd] > 0 else {
             return
         }
         if sizeInfo.isBackground {
@@ -353,70 +376,72 @@ public final class FlexboxEngine : LayoutEngine {
             breakLine(for: .section)
         } else if sizeInfo.isFooter {
             breakLine(for: .footer)
-        } else if currentLineRectInfo.count > 0 {
+        } else if currentLineRectInfo.count > 0 && dependency.flexWrap(in: sizeInfo.section) == .wrap {
             let maxV = currentOrigin.axis
                 + dependency.minimumInteritemSpacing(in: currentSection.index).vec
                 + sizeInfo.value.size.axis
                 + dependency.insets(in: currentSection.index).axisMax
-            if maxV.take(sd) > dimensionConstraint.axis.take(sd) {
+            if maxV[sd] > dimensionConstraint.axis[sd] {
                 breakLine()
             }
         }
 
         if currentLineRectInfo.count == 0 {
-            if currentSection.lineCount <= 0 {
+            if currentSection.lineCount <= 0 || currentSection.isExiting {
                 let preInsets = sizeInfo.section > 0 ? dependency.insets(in: sizeInfo.section - 1) : UIEdgeInsets.zero
                 let currentInsets = dependency.insets(in: sizeInfo.section)
-                currentOrigin = currentOrigin.axisMove(sizeInfo.isHeaderFooter ? CGFloat(0).vec : currentInsets.axisMin).take(sd)
+                currentOrigin = currentOrigin.axisMove(sizeInfo.isHeaderFooter ? CGFloat(0).vec : currentInsets.axisMin)[sd]
                 if sizeInfo.isHeaderFooter {
                     let lastSectionInsetBottom: CGFloat
                     let currentSectionInsetBottom: CGFloat
                     if let lastElement = pageInfo.last?.last {
                         if lastElement.section != sizeInfo.section && !lastElement.isHeaderFooter {
-                            lastSectionInsetBottom = preInsets.crossMax.take(sd)
+                            lastSectionInsetBottom = preInsets.crossMax[sd]
                         } else {
                             lastSectionInsetBottom = 0
                         }
-                        currentSectionInsetBottom = (sizeInfo.isFooter && lastElement.section == sizeInfo.section && !lastElement.isHeaderFooter) ? currentInsets.crossMax.take(sd) : 0
+                        currentSectionInsetBottom = (sizeInfo.isFooter && lastElement.section == sizeInfo.section && !lastElement.isHeaderFooter) ? currentInsets.crossMax[sd] : 0
                     } else {
                         lastSectionInsetBottom = 0
                         currentSectionInsetBottom = 0
                     }
-                    currentOrigin = currentOrigin.crossMove(lastSectionInsetBottom + currentSectionInsetBottom).take(sd)
+                    currentOrigin = currentOrigin.crossMove(lastSectionInsetBottom + currentSectionInsetBottom)[sd]
                 } else {
                     switch dependency.sectionInsetCollapse {
                     case .separate:
-                        currentOrigin = currentOrigin.crossMove(currentInsets.crossMin + preInsets.crossMax).take(sd)
+                        currentOrigin = currentOrigin.crossMove(currentInsets.crossMin + preInsets.crossMax)[sd]
                     case .collapse:
-                        currentOrigin = currentOrigin.crossMove(max(currentInsets.crossMax.take(sd), preInsets.crossMax.take(sd))).take(sd)
+                        currentOrigin = currentOrigin.crossMove(max(currentInsets.crossMax[sd], preInsets.crossMax[sd]))[sd]
                     }
                 }
             } else {
-                currentOrigin = currentOrigin.axisMove(dependency.insets(in: currentSection.index).axisMin).take(sd)
-                currentOrigin = currentOrigin.crossMove(dependency.minimumLineSpacing(in: currentSection.index)).take(sd)
+                currentOrigin = currentOrigin.axisMove(dependency.insets(in: currentSection.index).axisMin)[sd]
+                currentOrigin = currentOrigin.crossMove(dependency.minimumLineSpacing(in: currentSection.index))[sd]
             }
         } else {
-            currentOrigin = currentOrigin.axisMove(dependency.minimumInteritemSpacing(in: currentSection.index)).take(sd)
+            currentOrigin = currentOrigin.axisMove(dependency.minimumInteritemSpacing(in: currentSection.index))[sd]
         }
         
         let newRect: CGRect
         if sizeInfo.isHeaderFooter {
-            newRect = CGRect(origin: currentOrigin, size: Vec(axis: dimensionConstraint.axis, cross: sizeInfo.value.size.cross).take(sd))
+            newRect = CGRect(origin: currentOrigin, size: Vec2(axis: dimensionConstraint.axis, cross: sizeInfo.value.size.cross)[sd])
         } else {
             newRect = CGRect(origin: currentOrigin, size: sizeInfo.value.size)
         }
         currentLineRectInfo.append(RectIntermedia(key: sizeInfo.key, value: newRect, grow: sizeInfo.value.grow, shrink: sizeInfo.value.shrink))
-        currentCrossDimension = max(currentCrossDimension, newRect.cross.take(sd))
+        currentCrossDimension = max(currentCrossDimension, newRect.cross)
+        contentSize = contentSize.axisChange(to: max(contentSize.axis, newRect.axisMax))[sd]
         if sizeInfo.isHeader {
             breakLine(for: .header)
         } else {
-            currentOrigin = currentOrigin.axisChange(to: newRect.axisMax).take(sd)
+            currentOrigin = currentOrigin.axisChange(to: newRect.axisMax)[sd]
         }
     }
     
-    public static func begin(with collectionView: UICollectionView, dependency: FlexboxEngineDependency) -> FlexboxEngine {
-        let insets = collectionView.adjustedContentInset
-        let size = CGSize(width: collectionView.bounds.size.width - insets.left - insets.right, height: collectionView.bounds.size.height - insets.top - insets.bottom)
+    public static func begin(with dependency: FlexboxEngineDependency) -> FlexboxEngine {
+        let insets = dependency.collectionViewAdjustedContentInset
+        let bounds = dependency.collectionViewBounds
+        let size = CGSize(width: bounds.size.width - insets.left - insets.right, height: bounds.size.height - insets.top - insets.bottom)
         return FlexboxEngine(
             dependency: dependency,
             dimensionConstraint: size,
@@ -424,21 +449,20 @@ public final class FlexboxEngine : LayoutEngine {
         )
     }
     
-    private struct SectionIntermedia {
+    internal struct SectionIntermedia {
         
         let index: Int
         
-        let lineCount: Int
-        
         let startPoint: CGPoint
         
-        init(_ sectionIndex: Int, _ startPoint: CGPoint) {
-            self.init(index: sectionIndex, lineCount: 0, startPoint: startPoint)
-        }
+        var lineCount = 0
         
-        init(index: Int, lineCount: Int, startPoint: CGPoint) {
+        var endPoint: CGPoint?
+        
+        var isExiting = false
+        
+        init(_ index: Int, _ startPoint: CGPoint) {
             self.index = index
-            self.lineCount = lineCount
             self.startPoint = startPoint
         }
         
@@ -446,8 +470,20 @@ public final class FlexboxEngine : LayoutEngine {
             return SectionIntermedia(index + 1, startPoint)
         }
         
-        func nextLine() -> SectionIntermedia {
-            return SectionIntermedia(index: index, lineCount: lineCount + 1, startPoint: startPoint)
+        mutating func breakLine() {
+            lineCount += 1
+        }
+        
+        mutating func exit() {
+            isExiting = true
+        }
+        
+        mutating func finallize(_ mEndPoint: CGPoint) {
+            if let endPoint = endPoint {
+                self.endPoint = CGPoint(x: max(endPoint.x, mEndPoint.x), y: max(endPoint.y, mEndPoint.y))
+            } else {
+               endPoint = mEndPoint
+            }
         }
         
     }
@@ -513,6 +549,10 @@ public final class FlexboxEngine : LayoutEngine {
 
 public protocol FlexboxEngineDependency : AnyObject {
     
+    var collectionViewBounds: CGRect { get }
+    
+    var collectionViewAdjustedContentInset: UIEdgeInsets { get }
+    
     var scrollDirection: UICollectionView.ScrollDirection { get }
     
     var sectionInsetCollapse: SectionInsetsCollapse { get }
@@ -530,6 +570,8 @@ public protocol FlexboxEngineDependency : AnyObject {
     func alignItems(in section: Int) -> UICollectionViewFlexboxLayout.AlignItems
     
     func alignSelf(at indexPath: IndexPath) -> UICollectionViewFlexboxLayout.AlignSelf
+    
+    func flexWrap(in section: Int) -> UICollectionViewFlexboxLayout.FlexWrap
     
     func flexShrink(at indexPath: IndexPath) -> CGFloat
     

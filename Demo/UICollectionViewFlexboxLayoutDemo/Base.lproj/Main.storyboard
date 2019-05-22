@@ -77,6 +77,26 @@
                                             <segue destination="vto-JB-BSE" kind="show" id="r2g-Jh-c6R"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" textLabel="GG7-w4-3c5" style="IBUITableViewCellStyleDefault" id="VnC-BO-hvd">
+                                        <rect key="frame" x="0.0" y="123" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="VnC-BO-hvd" id="rpf-IN-2eD">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Vertical with Axis Scrolling Enabled" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="GG7-w4-3c5">
+                                                    <rect key="frame" x="20" y="0.0" width="374" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="mQf-pB-ZZe" kind="show" id="IGh-Hq-yd8"/>
+                                        </connections>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -99,7 +119,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ndd-yc-Rck">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ndd-yc-Rck">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewLayout key="collectionViewLayout" id="jW3-rG-EAy" customClass="UICollectionViewFlexboxLayout" customModule="UICollectionViewFlexboxLayout"/>
@@ -252,7 +272,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Yfz-SV-Wgp">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" alwaysBounceVertical="YES" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Yfz-SV-Wgp">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewLayout key="collectionViewLayout" id="Ag6-ug-sp4" customClass="UICollectionViewFlexboxLayout" customModule="UICollectionViewFlexboxLayout"/>
@@ -290,6 +310,50 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PL3-oX-CjO" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1223" y="600"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="U2Y-1y-Max">
+            <objects>
+                <viewController id="mQf-pB-ZZe" customClass="ViewController" customModule="UICollectionViewFlexboxLayoutDemo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8T9-0r-9Sg">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="UIt-Nq-JDX">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <collectionViewLayout key="collectionViewLayout" id="v8Z-vO-qvG" customClass="UICollectionViewAxisScrollableFlexboxLayout" customModule="UICollectionViewFlexboxLayout"/>
+                                <cells/>
+                                <connections>
+                                    <outlet property="dataSource" destination="mQf-pB-ZZe" id="NWF-rZ-1VD"/>
+                                    <outlet property="delegate" destination="mQf-pB-ZZe" id="ha3-Wi-0Lk"/>
+                                </connections>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstItem="UIt-Nq-JDX" firstAttribute="top" secondItem="8T9-0r-9Sg" secondAttribute="top" id="Lrv-FZ-HUN"/>
+                            <constraint firstAttribute="bottom" secondItem="UIt-Nq-JDX" secondAttribute="bottom" id="NW7-Bn-B8I"/>
+                            <constraint firstAttribute="trailing" secondItem="UIt-Nq-JDX" secondAttribute="trailing" id="Uel-1Z-rSZ"/>
+                            <constraint firstItem="UIt-Nq-JDX" firstAttribute="leading" secondItem="8T9-0r-9Sg" secondAttribute="leading" id="bcu-KF-RmC"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="oza-4W-gjU"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="1Ip-eg-xJK">
+                        <barButtonItem key="rightBarButtonItem" title="Control Pannel" id="sZm-Oo-kO6">
+                            <connections>
+                                <action selector="didOpenControlPannel:" destination="mQf-pB-ZZe" id="zgo-mz-yqH"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="collectionView" destination="UIt-Nq-JDX" id="cd6-9N-So8"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Cym-BF-bMd" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="116" y="954"/>
         </scene>
     </scenes>
 </document>
