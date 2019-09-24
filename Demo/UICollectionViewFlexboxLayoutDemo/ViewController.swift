@@ -185,8 +185,10 @@ class ViewController: UIViewController {
             }
             collectionView.addRefreshFooter { [weak self] footer in
                 self?.mockDelay {
-                    self?.mData += MockData
-                    self?.collectionView.reloadData()
+                    if let newSectionIdx = self?.mData.count {
+                        self?.mData += MockData
+                        self?.collectionView.insertSections(IndexSet(newSectionIdx..<(newSectionIdx + MockData.count)))
+                    }
                     footer.success()
                 }
             }

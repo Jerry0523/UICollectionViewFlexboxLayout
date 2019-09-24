@@ -74,6 +74,8 @@ public protocol LayoutEngine {
     
     var contentSize: CGSize { get }
     
+    var dimensionConstraint: CGSize { get }
+    
     static func begin(with dependency: Dependency) -> Self
     
     func pageIndex(for rect: CGRect) -> ClosedRange<Int>
@@ -98,7 +100,7 @@ public final class FlexboxEngine : LayoutEngine {
     
     unowned public let dependency: FlexboxEngineDependency
     
-    let dimensionConstraint: CGSize
+    public let dimensionConstraint: CGSize
     
     public var rectMap = [IndexPath: CGRect]()
     
@@ -188,10 +190,22 @@ public final class FlexboxEngine : LayoutEngine {
     }
     
     private func applyAxisDistribution() {
-        guard let first = currentLineRectInfo.first, let last = currentLineRectInfo.last, !last.isHeaderFooter else {
+        guard
+            case .wrap = dependency.flexWrap(in: currentSection.index),
+            let first = currentLineRectInfo.first,
+            let last = currentLineRectInfo.last,
+            !last.isHeaderFooter else {
             return
         }
-        let justifyContent = dependency.justifyContent(in: currentSection.index)
+        let justifyContent = { () -> UICollectionViewFlexboxLayout.JustifyContent in
+            var ret = dependency.justifyContent(in: currentSection.index)
+            if  (ret == .spaceAround || ret == .spaceBetween)
+                && currentLineRectInfo.count <= 1 {
+                ret = .center
+            }
+            return ret
+        }()
+        
         let insets = dependency.insets(in: currentSection.index)
         
         let totalValidSpace = dimensionConstraint.axis - insets.axisMin - insets.axisMax
@@ -215,27 +229,23 @@ public final class FlexboxEngine : LayoutEngine {
                 }
             }
         case .spaceAround:
-            if currentLineRectInfo.count > 1 {
-                let itemSpacing = ((totalValidSpace - totalItemSize) / CGFloat(currentLineRectInfo.count)).floored
-                let halfSpacing = (itemSpacing * 0.5).floored
-                currentLineRectInfo = currentLineRectInfo.reduce(into: (insets.axisMin - halfSpacing, [RectIntermedia]())) {
-                    var rect = $1.value
-                    rect.origin = rect.origin.axisChange(to: $0.0 + itemSpacing)[sd]
-                    $0.0 = rect.axisMax
-                    $0.1.append($1.shift{ $0 = rect })
-                    }.1
-            }
+            let itemSpacing = ((totalValidSpace - totalItemSize) / CGFloat(currentLineRectInfo.count)).floored
+            let halfSpacing = (itemSpacing * 0.5).floored
+            currentLineRectInfo = currentLineRectInfo.reduce(into: (insets.axisMin - halfSpacing, [RectIntermedia]())) {
+                var rect = $1.value
+                rect.origin = rect.origin.axisChange(to: $0.0 + itemSpacing)[sd]
+                $0.0 = rect.axisMax
+                $0.1.append($1.shift{ $0 = rect })
+                }.1
         case .spaceBetween:
-            if currentLineRectInfo.count > 1 {
-                let itemSpacing = ((totalValidSpace - totalItemSize) / CGFloat(currentLineRectInfo.count - 1)).floored
-                currentLineRectInfo = currentLineRectInfo.reduce(into: (insets.axisMin - itemSpacing, [RectIntermedia]())) {
-                    var rect = $1.value
-                    rect.origin = rect.origin.axisChange(to: $0.0 + itemSpacing)[sd]
-                    var ret = $0.1
-                    ret.append($1.shift{ $0 = rect })
-                    $0 = (rect.axisMax, ret)
-                    }.1
-            }
+            let itemSpacing = ((totalValidSpace - totalItemSize) / CGFloat(currentLineRectInfo.count - 1)).floored
+            currentLineRectInfo = currentLineRectInfo.reduce(into: (insets.axisMin - itemSpacing, [RectIntermedia]())) {
+                var rect = $1.value
+                rect.origin = rect.origin.axisChange(to: $0.0 + itemSpacing)[sd]
+                var ret = $0.1
+                ret.append($1.shift{ $0 = rect })
+                $0 = (rect.axisMax, ret)
+                }.1
         }
     }
     

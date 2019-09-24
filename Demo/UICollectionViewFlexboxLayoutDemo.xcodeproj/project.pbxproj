@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,12 +12,22 @@
 		C42C7B012266D8B500BF9F99 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C42C7AFF2266D8B500BF9F99 /* Main.storyboard */; };
 		C42C7B032266D8B600BF9F99 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C42C7B022266D8B600BF9F99 /* Assets.xcassets */; };
 		C42C7B062266D8B600BF9F99 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C42C7B042266D8B600BF9F99 /* LaunchScreen.storyboard */; };
-		C4966907228AD9EF0084610D /* UICollectionViewFlexboxLayout.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4966906228AD9EF0084610D /* UICollectionViewFlexboxLayout.framework */; };
-		C4966908228AD9EF0084610D /* UICollectionViewFlexboxLayout.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C4966906228AD9EF0084610D /* UICollectionViewFlexboxLayout.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C46AB31C2339FC45001C9932 /* UICollectionViewFlexboxLayout.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C46AB3192339FB71001C9932 /* UICollectionViewFlexboxLayout.framework */; };
+		C46AB31D2339FC45001C9932 /* UICollectionViewFlexboxLayout.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C46AB3192339FB71001C9932 /* UICollectionViewFlexboxLayout.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C4ADBCA52339FA7D00CC5671 /* JWRefreshControl in Frameworks */ = {isa = PBXBuildFile; productRef = C4ADBCA42339FA7D00CC5671 /* JWRefreshControl */; };
+		C4ADBCA82339FAAE00CC5671 /* Intent in Frameworks */ = {isa = PBXBuildFile; productRef = C4ADBCA72339FAAE00CC5671 /* Intent */; };
 		C4D087752283DA5E00B5923D /* ControlPannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D087742283DA5E00B5923D /* ControlPannel.swift */; };
-		C4D087772283DCF100B5923D /* Intent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4D087762283DCF100B5923D /* Intent.framework */; };
-		C4D7DE4D22716AE200F690D4 /* JWRefreshControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4D7DE4C22716AE200F690D4 /* JWRefreshControl.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C46AB3182339FB71001C9932 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C46AB3142339FB71001C9932 /* UICollectionViewFlexboxLayout.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C49668E5228ACF700084610D;
+			remoteInfo = UICollectionViewFlexboxLayout;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		C4966909228AD9EF0084610D /* Embed Frameworks */ = {
@@ -26,7 +36,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C4966908228AD9EF0084610D /* UICollectionViewFlexboxLayout.framework in Embed Frameworks */,
+				C46AB31D2339FC45001C9932 /* UICollectionViewFlexboxLayout.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -41,7 +51,7 @@
 		C42C7B022266D8B600BF9F99 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C42C7B052266D8B600BF9F99 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C42C7B072266D8B600BF9F99 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C4966906228AD9EF0084610D /* UICollectionViewFlexboxLayout.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = UICollectionViewFlexboxLayout.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C46AB3142339FB71001C9932 /* UICollectionViewFlexboxLayout.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = UICollectionViewFlexboxLayout.xcodeproj; path = ../UICollectionViewFlexboxLayout/UICollectionViewFlexboxLayout.xcodeproj; sourceTree = "<group>"; };
 		C4D087742283DA5E00B5923D /* ControlPannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlPannel.swift; sourceTree = "<group>"; };
 		C4D087762283DCF100B5923D /* Intent.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intent.framework; path = Carthage/Build/iOS/Intent.framework; sourceTree = "<group>"; };
 		C4D7DE4C22716AE200F690D4 /* JWRefreshControl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JWRefreshControl.framework; path = Carthage/Build/iOS/JWRefreshControl.framework; sourceTree = "<group>"; };
@@ -52,9 +62,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C4966907228AD9EF0084610D /* UICollectionViewFlexboxLayout.framework in Frameworks */,
-				C4D7DE4D22716AE200F690D4 /* JWRefreshControl.framework in Frameworks */,
-				C4D087772283DCF100B5923D /* Intent.framework in Frameworks */,
+				C46AB31C2339FC45001C9932 /* UICollectionViewFlexboxLayout.framework in Frameworks */,
+				C4ADBCA52339FA7D00CC5671 /* JWRefreshControl in Frameworks */,
+				C4ADBCA82339FAAE00CC5671 /* Intent in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -64,7 +74,7 @@
 		C42C7AEF2266D8B400BF9F99 = {
 			isa = PBXGroup;
 			children = (
-				C4966906228AD9EF0084610D /* UICollectionViewFlexboxLayout.framework */,
+				C46AB3142339FB71001C9932 /* UICollectionViewFlexboxLayout.xcodeproj */,
 				C42C7AFA2266D8B500BF9F99 /* UICollectionViewFlexboxLayoutDemo */,
 				C42C7AF92266D8B500BF9F99 /* Products */,
 				C4D7DE4B22716AE200F690D4 /* Frameworks */,
@@ -93,6 +103,14 @@
 			path = UICollectionViewFlexboxLayoutDemo;
 			sourceTree = "<group>";
 		};
+		C46AB3152339FB71001C9932 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C46AB3192339FB71001C9932 /* UICollectionViewFlexboxLayout.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		C4D7DE4B22716AE200F690D4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -112,7 +130,6 @@
 				C42C7AF42266D8B500BF9F99 /* Sources */,
 				C42C7AF52266D8B500BF9F99 /* Frameworks */,
 				C42C7AF62266D8B500BF9F99 /* Resources */,
-				C4D7DE4F22716B2800F690D4 /* Embed Carthage Frameworks */,
 				C4966909228AD9EF0084610D /* Embed Frameworks */,
 			);
 			buildRules = (
@@ -120,6 +137,10 @@
 			dependencies = (
 			);
 			name = UICollectionViewFlexboxLayoutDemo;
+			packageProductDependencies = (
+				C4ADBCA42339FA7D00CC5671 /* JWRefreshControl */,
+				C4ADBCA72339FAAE00CC5671 /* Intent */,
+			);
 			productName = UICollectionViewFlexboxLayout;
 			productReference = C42C7AF82266D8B500BF9F99 /* UICollectionViewFlexboxLayoutDemo.app */;
 			productType = "com.apple.product-type.application";
@@ -148,14 +169,34 @@
 				Base,
 			);
 			mainGroup = C42C7AEF2266D8B400BF9F99;
+			packageReferences = (
+				C4ADBCA32339FA7D00CC5671 /* XCRemoteSwiftPackageReference "JWRefreshControl" */,
+				C4ADBCA62339FAAE00CC5671 /* XCRemoteSwiftPackageReference "Intent" */,
+			);
 			productRefGroup = C42C7AF92266D8B500BF9F99 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = C46AB3152339FB71001C9932 /* Products */;
+					ProjectRef = C46AB3142339FB71001C9932 /* UICollectionViewFlexboxLayout.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				C42C7AF72266D8B500BF9F99 /* UICollectionViewFlexboxLayoutDemo */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		C46AB3192339FB71001C9932 /* UICollectionViewFlexboxLayout.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = UICollectionViewFlexboxLayout.framework;
+			remoteRef = C46AB3182339FB71001C9932 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		C42C7AF62266D8B500BF9F99 /* Resources */ = {
@@ -169,29 +210,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		C4D7DE4F22716B2800F690D4 /* Embed Carthage Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/../Carthage/Build/iOS/JWRefreshControl.framework",
-				"$(SRCROOT)/../Carthage/Build/iOS/Intent.framework",
-			);
-			name = "Embed Carthage Frameworks";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C42C7AF42266D8B500BF9F99 /* Sources */ = {
@@ -348,12 +366,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = F93845W87F;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/../Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = UICollectionViewFlexboxLayoutDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -372,12 +387,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = F93845W87F;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/../Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = UICollectionViewFlexboxLayoutDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -412,6 +424,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C4ADBCA32339FA7D00CC5671 /* XCRemoteSwiftPackageReference "JWRefreshControl" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Jerry0523/JWRefreshControl.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.6;
+			};
+		};
+		C4ADBCA62339FAAE00CC5671 /* XCRemoteSwiftPackageReference "Intent" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Jerry0523/Intent.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.6;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C4ADBCA42339FA7D00CC5671 /* JWRefreshControl */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C4ADBCA32339FA7D00CC5671 /* XCRemoteSwiftPackageReference "JWRefreshControl" */;
+			productName = JWRefreshControl;
+		};
+		C4ADBCA72339FAAE00CC5671 /* Intent */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C4ADBCA62339FAAE00CC5671 /* XCRemoteSwiftPackageReference "Intent" */;
+			productName = Intent;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C42C7AF02266D8B400BF9F99 /* Project object */;
 }

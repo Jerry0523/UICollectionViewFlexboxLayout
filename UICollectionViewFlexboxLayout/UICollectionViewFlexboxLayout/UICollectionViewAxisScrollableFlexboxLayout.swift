@@ -35,15 +35,10 @@ open class UICollectionViewAxisScrollableFlexboxLayout : UICollectionViewFlexbox
     }
     
     open override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
-        let ret = super.shouldInvalidateLayout(forBoundsChange: newBounds)
+        let ret = isAxisScrolling || super.shouldInvalidateLayout(forBoundsChange: newBounds)
         if ret {
             return ret
         }
-        
-        if mIsAxisScrolling {
-            return true
-        }
-        
         var shouldInvalidateLayout = false
         if let activeSection = mActiveSection,
             let sectionIndexes = sectionIndexes(in: newBounds),
@@ -134,8 +129,8 @@ open class UICollectionViewAxisScrollableFlexboxLayout : UICollectionViewFlexbox
                 let axisVelocity = velocity.axis[self.scrollDirection]
                 let absAxisVelocity = abs(axisVelocity)
                 let absCrossVelocity = abs(velocity.cross[self.scrollDirection])
-                self.mIsAxisScrolling = absAxisVelocity > absCrossVelocity
-                let isAxisScrolling = self.mIsAxisScrolling && self.flexWrap(in: sectionIndex) == .noWrap
+                self.isAxisScrolling = absAxisVelocity > absCrossVelocity
+                let isAxisScrolling = self.isAxisScrolling && self.flexWrap(in: sectionIndex) == .noWrap
                 func fixContentSizeBySectionChanged() {
                     if let sectionCount = self.mLayoutEngine?.sectionInfo.count,
                         sectionCount > sectionIndex,
@@ -164,7 +159,7 @@ open class UICollectionViewAxisScrollableFlexboxLayout : UICollectionViewFlexbox
                         self.fixAxisOffsetIfNeeded()
                         self.mActiveSection = nil
                     } else {
-                        self.mIsAxisScrolling = true
+                        self.isAxisScrolling = true
                     }
                 }
             }
@@ -189,7 +184,7 @@ open class UICollectionViewAxisScrollableFlexboxLayout : UICollectionViewFlexbox
         }
     }
     
-    private var mIsAxisScrolling = false
+    private var isAxisScrolling = false
     
     private var mFixedContentSize: CGSize?
 }

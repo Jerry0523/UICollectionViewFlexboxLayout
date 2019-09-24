@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Intent",
+        "repositoryURL": "https://github.com/Jerry0523/Intent.git",
+        "state": {
+          "branch": null,
+          "revision": "2a1d348d0b5d576f04e0d4ff3e029a84556a5f6a",
+          "version": "1.0.6"
+        }
+      },
+      {
+        "package": "JWRefreshControl",
+        "repositoryURL": "https://github.com/Jerry0523/JWRefreshControl.git",
+        "state": {
+          "branch": null,
+          "revision": "0a33bdeee287a262fd86e3fdf928c2f2d50a7278",
+          "version": "1.0.6"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

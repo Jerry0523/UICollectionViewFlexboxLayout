@@ -133,7 +133,9 @@ open class UICollectionViewCustomizableLayout<S> : UICollectionViewLayout where 
     
     open override func invalidateLayout(with context: UICollectionViewLayoutInvalidationContext) {
         super.invalidateLayout(with: context)
-        shouldRecalculate = shouldRecalculate || context.shouldRecalculate
+        shouldRecalculate = shouldRecalculate
+            || mLayoutEngine?.dimensionConstraint.axis[scrollDirection] != collectionView?.bounds.axis[scrollDirection]
+            || context.shouldRecalculate
     }
     
     open override func shouldInvalidateLayout(forPreferredLayoutAttributes preferredAttributes: UICollectionViewLayoutAttributes, withOriginalAttributes originalAttributes: UICollectionViewLayoutAttributes) -> Bool {
@@ -197,7 +199,7 @@ open class UICollectionViewCustomizableLayout<S> : UICollectionViewLayout where 
             zIndex = 0
         } 
         return layoutAttributesForCommon(at: mIndexPath) {
-            let attrs = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: elementKind, with: $0)
+            let attrs = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: elementKind, with: IndexPath(item: 0, section: $0.section))
             attrs.zIndex = zIndex
             return attrs
         }
