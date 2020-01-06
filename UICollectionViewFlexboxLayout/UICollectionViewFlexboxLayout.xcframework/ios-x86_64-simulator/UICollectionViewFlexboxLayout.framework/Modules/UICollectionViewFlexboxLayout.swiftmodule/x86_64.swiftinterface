@@ -1,0 +1,262 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.1 (swiftlang-1100.0.270.13 clang-1100.0.33.7)
+// swift-module-flags: -target x86_64-apple-ios12.4-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name UICollectionViewFlexboxLayout
+import Swift
+import UIKit
+public protocol UICollectionViewDelegateFlexboxLayout : UICollectionViewFlexboxLayout.UICollectionViewDelegateExtFlowLayout {
+  func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, justifyContentForSectionAt section: Swift.Int) -> UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.JustifyContent?
+  func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, alignItemsForSectionAt section: Swift.Int) -> UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.AlignItems?
+  func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, flexWrapForSectionAt section: Swift.Int) -> UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.FlexWrap?
+  func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, alignSelfForItemAt indexPath: Foundation.IndexPath) -> UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.AlignSelf
+  func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, flexGrowForItemAt indexPath: Foundation.IndexPath) -> CoreGraphics.CGFloat
+  func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, flexShrinkForItemAt indexPath: Foundation.IndexPath) -> CoreGraphics.CGFloat
+}
+extension UICollectionViewDelegateFlexboxLayout {
+  public func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, justifyContentForSectionAt section: Swift.Int) -> UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.JustifyContent?
+  public func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, alignItemsForSectionAt section: Swift.Int) -> UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.AlignItems?
+  public func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, flexWrapForSectionAt section: Swift.Int) -> UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.FlexWrap?
+  public func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, alignSelfForItemAt indexPath: Foundation.IndexPath) -> UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.AlignSelf
+  public func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, flexGrowForItemAt indexPath: Foundation.IndexPath) -> CoreGraphics.CGFloat
+  public func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, flexShrinkForItemAt indexPath: Foundation.IndexPath) -> CoreGraphics.CGFloat
+}
+open class UICollectionViewFlexboxLayout : UICollectionViewFlexboxLayout.UICollectionViewCustomizableLayout<UICollectionViewFlexboxLayout.FlexboxEngine> {
+  public enum FlexWrap : Swift.Int {
+    case wrap
+    case noWrap
+    public typealias RawValue = Swift.Int
+    public init?(rawValue: Swift.Int)
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  public enum JustifyContent : Swift.Int {
+    case start
+    case end
+    case center
+    case spaceBetween
+    case spaceAround
+    public typealias RawValue = Swift.Int
+    public init?(rawValue: Swift.Int)
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  public enum AlignItems : Swift.Int {
+    case start
+    case end
+    case center
+    case stretch
+    public typealias RawValue = Swift.Int
+    public init?(rawValue: Swift.Int)
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  public enum AlignSelf {
+    case inherited
+    case differed(_: UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.AlignItems)
+  }
+  open var justifyContent: UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.JustifyContent {
+    get
+    set
+  }
+  open var alignItems: UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.AlignItems {
+    get
+    set
+  }
+  open var flexWrap: UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.FlexWrap {
+    get
+    set
+  }
+  @objc override dynamic open func prepare(forCollectionViewUpdates updateItems: [UIKit.UICollectionViewUpdateItem])
+  @objc override dynamic open func finalizeCollectionViewUpdates()
+  @objc override dynamic open func initialLayoutAttributesForAppearingItem(at itemIndexPath: Foundation.IndexPath) -> UIKit.UICollectionViewLayoutAttributes?
+  @objc override dynamic open func finalLayoutAttributesForDisappearingItem(at itemIndexPath: Foundation.IndexPath) -> UIKit.UICollectionViewLayoutAttributes?
+  public func flexWrap(in section: Swift.Int) -> UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.FlexWrap
+  @objc override dynamic public init()
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+extension UICollectionViewFlexboxLayout : UICollectionViewFlexboxLayout.FlexboxEngineDependency {
+  public var collectionViewBounds: CoreGraphics.CGRect {
+    get
+  }
+  public var collectionViewAdjustedContentInset: UIKit.UIEdgeInsets {
+    get
+  }
+  public func justifyContent(in section: Swift.Int) -> UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.JustifyContent
+  public func alignItems(in section: Swift.Int) -> UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.AlignItems
+  public func alignSelf(at indexPath: Foundation.IndexPath) -> UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.AlignSelf
+  public func flexShrink(at indexPath: Foundation.IndexPath) -> CoreGraphics.CGFloat
+  public func flexGrow(at indexPath: Foundation.IndexPath) -> CoreGraphics.CGFloat
+}
+open class UICollectionViewAxisScrollableFlexboxLayout : UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout {
+  @objc override dynamic public init()
+  @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @objc override dynamic open func prepare()
+  @objc override dynamic open var collectionViewContentSize: CoreGraphics.CGSize {
+    @objc get
+  }
+  @objc override dynamic open func shouldInvalidateLayout(forBoundsChange newBounds: CoreGraphics.CGRect) -> Swift.Bool
+  override public func flexWrap(in section: Swift.Int) -> UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.FlexWrap
+  @objc deinit
+}
+public typealias SizeInfo = UICollectionViewFlexboxLayout.Pair<Foundation.IndexPath, (size: CoreGraphics.CGSize, grow: CoreGraphics.CGFloat, shrink: CoreGraphics.CGFloat)>
+public typealias RectInfo = UICollectionViewFlexboxLayout.Pair<Foundation.IndexPath, CoreGraphics.CGRect>
+public typealias PageInfo = [[UICollectionViewFlexboxLayout.RectInfo]]
+public struct Pair<Key, Value> {
+}
+public protocol LayoutEngine {
+  associatedtype SizeType
+  associatedtype Dependency
+  var dependency: Self.Dependency { get }
+  var rectMap: [Foundation.IndexPath : CoreGraphics.CGRect] { get }
+  var pageInfo: UICollectionViewFlexboxLayout.PageInfo { get }
+  var contentSize: CoreGraphics.CGSize { get }
+  var dimensionConstraint: CoreGraphics.CGSize { get }
+  static func begin(with dependency: Self.Dependency) -> Self
+  func pageIndex(for rect: CoreGraphics.CGRect) -> Swift.ClosedRange<Swift.Int>
+  func shouldInvalidateLayout(forBoundsChange newBounds: CoreGraphics.CGRect) -> Swift.Bool
+  func measureHeader(at section: Swift.Int) -> Self.SizeType?
+  func measureFooter(at section: Swift.Int) -> Self.SizeType?
+  func measureBackground(at section: Swift.Int) -> Self.SizeType?
+  func measureItem(at indexPath: Foundation.IndexPath, with preferredAttr: UIKit.UICollectionViewLayoutAttributes?) -> Self.SizeType
+  func append(_ sizeInfo: Self.SizeType)
+  func finalize()
+}
+final public class FlexboxEngine : UICollectionViewFlexboxLayout.LayoutEngine {
+  unowned final public let dependency: UICollectionViewFlexboxLayout.FlexboxEngineDependency
+  final public let dimensionConstraint: CoreGraphics.CGSize
+  final public var rectMap: [Foundation.IndexPath : CoreGraphics.CGRect]
+  final public var pageInfo: UICollectionViewFlexboxLayout.PageInfo
+  final public var contentSize: CoreGraphics.CGSize
+  final public func finalize()
+  final public func pageIndex(for rect: CoreGraphics.CGRect) -> Swift.ClosedRange<Swift.Int>
+  final public func shouldInvalidateLayout(forBoundsChange newBounds: CoreGraphics.CGRect) -> Swift.Bool
+  final public func measureHeader(at section: Swift.Int) -> UICollectionViewFlexboxLayout.SizeInfo?
+  final public func measureFooter(at section: Swift.Int) -> UICollectionViewFlexboxLayout.SizeInfo?
+  final public func measureBackground(at section: Swift.Int) -> UICollectionViewFlexboxLayout.SizeInfo?
+  final public func measureItem(at indexPath: Foundation.IndexPath, with preferredAttr: UIKit.UICollectionViewLayoutAttributes?) -> UICollectionViewFlexboxLayout.SizeInfo
+  final public func appendBackground(_ sizeInfo: UICollectionViewFlexboxLayout.SizeInfo)
+  final public func append(_ sizeInfo: UICollectionViewFlexboxLayout.SizeInfo)
+  public static func begin(with dependency: UICollectionViewFlexboxLayout.FlexboxEngineDependency) -> UICollectionViewFlexboxLayout.FlexboxEngine
+  public typealias SizeType = UICollectionViewFlexboxLayout.Pair<Foundation.IndexPath, (size: CoreGraphics.CGSize, grow: CoreGraphics.CGFloat, shrink: CoreGraphics.CGFloat)>
+  public typealias Dependency = UICollectionViewFlexboxLayout.FlexboxEngineDependency
+  @objc deinit
+}
+public protocol FlexboxEngineDependency : AnyObject {
+  var collectionViewBounds: CoreGraphics.CGRect { get }
+  var collectionViewAdjustedContentInset: UIKit.UIEdgeInsets { get }
+  var scrollDirection: UIKit.UICollectionView.ScrollDirection { get }
+  var sectionInsetCollapse: UICollectionViewFlexboxLayout.SectionInsetsCollapse { get }
+  func sizeForItem(at indexPath: Foundation.IndexPath, with preferredAttr: UIKit.UICollectionViewLayoutAttributes?) -> CoreGraphics.CGSize
+  func insets(in section: Swift.Int) -> UIKit.UIEdgeInsets
+  func minimumLineSpacing(in section: Swift.Int) -> CoreGraphics.CGFloat
+  func minimumInteritemSpacing(in section: Swift.Int) -> CoreGraphics.CGFloat
+  func justifyContent(in section: Swift.Int) -> UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.JustifyContent
+  func alignItems(in section: Swift.Int) -> UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.AlignItems
+  func alignSelf(at indexPath: Foundation.IndexPath) -> UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.AlignSelf
+  func flexWrap(in section: Swift.Int) -> UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.FlexWrap
+  func flexShrink(at indexPath: Foundation.IndexPath) -> CoreGraphics.CGFloat
+  func flexGrow(at indexPath: Foundation.IndexPath) -> CoreGraphics.CGFloat
+  func referenceSizeForHeader(in section: Swift.Int) -> CoreGraphics.CGSize
+  func referenceSizeForFooter(in section: Swift.Int) -> CoreGraphics.CGSize
+  func showSectionBackground(in section: Swift.Int) -> Swift.Bool
+}
+public enum SectionInsetsCollapse {
+  case separate
+  case collapse
+  public static func == (a: UICollectionViewFlexboxLayout.SectionInsetsCollapse, b: UICollectionViewFlexboxLayout.SectionInsetsCollapse) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+  public func hash(into hasher: inout Swift.Hasher)
+}
+public enum CalculateMode : Swift.Equatable {
+  case tolerance(seconds: Foundation.TimeInterval)
+  case page(count: Swift.Int)
+  case full
+  public static func == (a: UICollectionViewFlexboxLayout.CalculateMode, b: UICollectionViewFlexboxLayout.CalculateMode) -> Swift.Bool
+}
+extension UICollectionView {
+  public static let elementKindSectionBackground: Swift.String
+}
+public protocol UICollectionViewDelegateExtFlowLayout : UIKit.UICollectionViewDelegateFlowLayout {
+  func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, showSectionBackgroundAt section: Swift.Int) -> Swift.Bool
+}
+open class UICollectionViewCustomizableLayout<S> : UIKit.UICollectionViewLayout where S : UICollectionViewFlexboxLayout.LayoutEngine {
+  @objc @IBInspectable open var minimumLineSpacing: CoreGraphics.CGFloat {
+    @objc get
+    @objc set
+  }
+  @objc @IBInspectable open var minimumInteritemSpacing: CoreGraphics.CGFloat {
+    @objc get
+    @objc set
+  }
+  open var itemSize: CoreGraphics.CGSize {
+    get
+    set
+  }
+  open var estimatedItemSize: CoreGraphics.CGSize {
+    get
+    set
+  }
+  @objc @IBInspectable open var headerReferenceSize: CoreGraphics.CGSize {
+    @objc get
+    @objc set
+  }
+  @objc @IBInspectable open var footerReferenceSize: CoreGraphics.CGSize {
+    @objc get
+    @objc set
+  }
+  @objc @IBInspectable open var sectionInset: UIKit.UIEdgeInsets {
+    @objc get
+    @objc set
+  }
+  open var scrollDirection: UIKit.UICollectionView.ScrollDirection {
+    get
+    set
+  }
+  open var sectionInsetCollapse: UICollectionViewFlexboxLayout.SectionInsetsCollapse {
+    get
+    set
+  }
+  open var calculateMode: UICollectionViewFlexboxLayout.CalculateMode {
+    get
+    set
+  }
+  @objc override dynamic open var collectionViewContentSize: CoreGraphics.CGSize {
+    @objc get
+  }
+  @objc override dynamic open func prepare()
+  @objc override dynamic open func invalidateLayout(with context: UIKit.UICollectionViewLayoutInvalidationContext)
+  @objc override dynamic open func shouldInvalidateLayout(forPreferredLayoutAttributes preferredAttributes: UIKit.UICollectionViewLayoutAttributes, withOriginalAttributes originalAttributes: UIKit.UICollectionViewLayoutAttributes) -> Swift.Bool
+  @objc override dynamic open func layoutAttributesForElements(in rect: CoreGraphics.CGRect) -> [UIKit.UICollectionViewLayoutAttributes]?
+  @objc override dynamic open func layoutAttributesForItem(at indexPath: Foundation.IndexPath) -> UIKit.UICollectionViewLayoutAttributes?
+  @objc override dynamic open func layoutAttributesForSupplementaryView(ofKind elementKind: Swift.String, at indexPath: Foundation.IndexPath) -> UIKit.UICollectionViewLayoutAttributes?
+  @objc override dynamic open func layoutAttributesForDecorationView(ofKind elementKind: Swift.String, at indexPath: Foundation.IndexPath) -> UIKit.UICollectionViewLayoutAttributes?
+  @objc override dynamic open func shouldInvalidateLayout(forBoundsChange newBounds: CoreGraphics.CGRect) -> Swift.Bool
+  @objc override dynamic public init()
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+extension UICollectionViewCustomizableLayout {
+  public func sizeForItem(at indexPath: Foundation.IndexPath, with preferredAttr: UIKit.UICollectionViewLayoutAttributes?) -> CoreGraphics.CGSize
+  public func insets(in section: Swift.Int) -> UIKit.UIEdgeInsets
+  public func minimumLineSpacing(in section: Swift.Int) -> CoreGraphics.CGFloat
+  public func minimumInteritemSpacing(in section: Swift.Int) -> CoreGraphics.CGFloat
+  public func referenceSizeForHeader(in section: Swift.Int) -> CoreGraphics.CGSize
+  public func referenceSizeForFooter(in section: Swift.Int) -> CoreGraphics.CGSize
+  public func showSectionBackground(in section: Swift.Int) -> Swift.Bool
+}
+extension UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.FlexWrap : Swift.Equatable {}
+extension UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.FlexWrap : Swift.Hashable {}
+extension UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.FlexWrap : Swift.RawRepresentable {}
+extension UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.JustifyContent : Swift.Equatable {}
+extension UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.JustifyContent : Swift.Hashable {}
+extension UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.JustifyContent : Swift.RawRepresentable {}
+extension UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.AlignItems : Swift.Equatable {}
+extension UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.AlignItems : Swift.Hashable {}
+extension UICollectionViewFlexboxLayout.UICollectionViewFlexboxLayout.AlignItems : Swift.RawRepresentable {}
+extension UICollectionViewFlexboxLayout.SectionInsetsCollapse : Swift.Equatable {}
+extension UICollectionViewFlexboxLayout.SectionInsetsCollapse : Swift.Hashable {}

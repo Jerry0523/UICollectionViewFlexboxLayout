@@ -28,13 +28,13 @@ class ControlPannel: UIViewController {
     }
     
     @IBAction func didClickSubmitButton(_ sender: UIButton) {
-        parent?.dismiss(animated: true) {
+        dismiss(animated: true) {
             self.exportConfig?(self.mJustifyContent, self.mAlignItems)
         }
     }
     
     @IBAction func didClickCancelButton(_ sender: UIButton) {
-        parent?.dismiss(animated: true)
+        dismiss(animated: true)
     }
     
     @IBAction func didUpdateJustifyContent(_ sender: UISegmentedControl) {

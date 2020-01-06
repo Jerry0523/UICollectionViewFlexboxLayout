@@ -10,17 +10,7 @@ import UIKit
 import Intent
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, TopWindowPerceptive {
-    
-    lazy var topWindow: UIWindow = {
-        let window = UIWindow(frame: UIScreen.main.bounds)
-        window.backgroundColor = UIColor.clear
-        window.windowLevel = UIWindow.Level.normal + 1
-        window.rootViewController = UIViewController()
-        window.makeKeyAndVisible()
-        window.isHidden = true
-        return window
-    }()
+class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
 

@@ -1,0 +1,4 @@
+framework module UICollectionViewFlexboxLayout {
+  header "UICollectionViewFlexboxLayout-Swift.h"
+  requires objc
+}
